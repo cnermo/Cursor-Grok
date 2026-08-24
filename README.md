@@ -1,2 +1,2 @@
 # Cursor-Grok
-# practicing usn=ing cursor automation
+# practicing using cursor automation  
