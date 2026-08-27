@@ -270,8 +270,66 @@ foreach ($row in $guideCsv) {
   $guideAdded++
 }
 Write-Host "Loaded $guideAdded new guide rows"
+
+# --- Food Nutrition Reference ---
+$foodId = Get-OrCreateDatabase "Food Nutrition Reference" @{
+  Name = @{ title = @{} }
+  "Typical Serving" = @{ rich_text = @{} }
+  Calories = @{ number = @{ format = "number" } }
+  "Protein (g)" = @{ number = @{ format = "number" } }
+  "Fat (g)" = @{ number = @{ format = "number" } }
+  "Carbs (g)" = @{ number = @{ format = "number" } }
+  "% Protein" = @{ number = @{ format = "percent" } }
+  "% Fat" = @{ number = @{ format = "percent" } }
+  "% Carbs" = @{ number = @{ format = "percent" } }
+  "Top Nutrients" = @{ rich_text = @{} }
+  Category = @{
+    select = @{
+      options = @(
+        @{ name = "Protein"; color = "red" }
+        @{ name = "Healthy Fat"; color = "orange" }
+        @{ name = "Dairy"; color = "blue" }
+        @{ name = "Nuts & Seeds"; color = "purple" }
+        @{ name = "Vegetable"; color = "green" }
+        @{ name = "Other"; color = "gray" }
+      )
+    }
+  }
+}
+$foodTitles = Get-ExistingTitles $foodId
+if (-not $foodTitles) { $foodTitles = New-Object 'System.Collections.Generic.HashSet[string]' }
+$foodCsv = Import-Csv -LiteralPath (Join-Path $here "Notion_Food_Nutrition_Reference.csv")
+$foodAdded = 0
+function Json-Number([string]$v) {
+  if ([string]::IsNullOrWhiteSpace($v)) { return "null" }
+  return $v
+}
+function Json-Percent([string]$v) {
+  if ([string]::IsNullOrWhiteSpace($v)) { return "null" }
+  return ([double]$v / 100.0).ToString([Globalization.CultureInfo]::InvariantCulture)
+}
+foreach ($row in $foodCsv) {
+  if ($foodTitles.Contains($row.Name)) { continue }
+  $props = '{' +
+    '"Name":{"title":[{"text":{"content":"' + (Escape-Json $row.Name) + '"}}]},' +
+    '"Typical Serving":{"rich_text":' + (New-RichArrayJson $row."Typical Serving") + '},' +
+    '"Calories":{"number":' + (Json-Number $row.Calories) + '},' +
+    '"Protein (g)":{"number":' + (Json-Number $row."Protein (g)") + '},' +
+    '"Fat (g)":{"number":' + (Json-Number $row."Fat (g)") + '},' +
+    '"Carbs (g)":{"number":' + (Json-Number $row."Carbs (g)") + '},' +
+    '"% Protein":{"number":' + (Json-Percent $row."% Protein") + '},' +
+    '"% Fat":{"number":' + (Json-Percent $row."% Fat") + '},' +
+    '"% Carbs":{"number":' + (Json-Percent $row."% Carbs") + '},' +
+    '"Top Nutrients":{"rich_text":' + (New-RichArrayJson $row."Top Nutrients") + '},' +
+    '"Category":{"select":{"name":"' + (Escape-Json $row.Category) + '"}}' +
+    '}'
+  Add-RowJson $foodId $props
+  $foodAdded++
+}
+Write-Host "Loaded $foodAdded new food nutrition rows"
 Write-Host "Done."
 Write-Host "Planner=$plannerId"
 Write-Host "Ideas=$ideasId"
 Write-Host "Shopping=$shopId"
 Write-Host "Guide=$guideId"
+Write-Host "Food=$foodId"
