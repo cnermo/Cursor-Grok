@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>12-Week Lifestyle Plan</title>
+  <style>
+    :root {
+      --ink: #1a1a1a;
+      --muted: #5c5c5c;
+      --line: #d9d9d9;
+      --paper: #fafafa;
+      --card: #ffffff;
+      --accent: #1f4d3a;
+      --warn-bg: #f8f1e7;
+      --warn-ink: #6b3f12;
+      --stop-bg: #f6ecec;
+      --stop-ink: #7a1f1f;
+      --ok-bg: #eef5f0;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.55;
+      font-size: 17px;
+    }
+    .wrap {
+      max-width: 42rem;
+      margin: 0 auto;
+      padding: 1.5rem 1.15rem 3.5rem;
+    }
+    h1, h2, h3 { line-height: 1.25; margin: 0 0 0.6rem; }
+    h1 { font-size: 1.75rem; letter-spacing: -0.02em; }
+    h2 {
+      font-size: 1.25rem;
+      margin-top: 2rem;
+      padding-top: 1.15rem;
+      border-top: 1px solid var(--line);
+    }
+    h3 { font-size: 1.05rem; margin-top: 1.25rem; }
+    p { margin: 0 0 0.85rem; }
+    .lede { color: var(--muted); font-size: 1.02rem; }
+    .meta { color: var(--muted); font-size: 0.88rem; margin-bottom: 1.25rem; }
+    .box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.95rem 1rem;
+      margin: 0.9rem 0;
+    }
+    .warn { background: var(--warn-bg); border-color: #ead7b8; color: var(--warn-ink); }
+    .stop { background: var(--stop-bg); border-color: #e3c4c4; color: var(--stop-ink); }
+    .ok { background: var(--ok-bg); border-color: #cfe0d4; }
+    .box strong { display: block; margin-bottom: 0.35rem; }
+    ul, ol { margin: 0.3rem 0 0.9rem; padding-left: 1.2rem; }
+    li { margin: 0.28rem 0; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+      margin: 0.6rem 0 1rem;
+      background: var(--card);
+    }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      border-bottom: 1px solid var(--line);
+      padding: 0.55rem 0.45rem;
+    }
+    th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); }
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.55rem;
+      margin: 0.9rem 0 1.1rem;
+    }
+    .stat {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.7rem 0.55rem;
+      text-align: center;
+    }
+    .stat b { display: block; font-size: 1.25rem; color: var(--accent); }
+    .stat span { display: block; font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; }
+    .day {
+      display: grid;
+      grid-template-columns: 6.2rem 1fr;
+      gap: 0.45rem 0.7rem;
+      margin: 0.4rem 0 1rem;
+    }
+    .day dt { font-weight: 650; color: var(--accent); }
+    .day dd { margin: 0; }
+    footer {
+      margin-top: 2.2rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+    @media (max-width: 640px) {
+      .stats { grid-template-columns: 1fr; }
+      .day { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; }
+    }
+    @media print {
+      body { background: #fff; font-size: 12.5pt; }
+      .wrap { max-width: none; padding: 0; }
+      h2 { break-before: page; }
+      h2:first-of-type { break-before: auto; }
+      .box, .stat, table { break-inside: avoid; }
+      a { color: inherit; text-decoration: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <h1>12-week lifestyle plan</h1>
+    <p class="lede">A follow-along plan for fatty liver, a past or current blood clot (DVT), swelling, asthma, and extra weight. One set of daily habits helps all five.</p>
+    <p class="meta">Lifestyle support only. It does not replace your doctors, prescribed medicines, or emergency care. August 2026.</p>
+
+    <div class="box stop">
+      <strong>Get emergency care now if you have</strong>
+      chest pain; sudden shortness of breath; coughing blood; one leg that suddenly becomes more swollen, red, or painful; yellowing of the eyes or skin; vomiting blood; or black stools. Call your clinic the same day if you gain about 2 pounds overnight or 5 pounds in a few days, or if you wake up short of breath.
+    </div>
+
+    <h2>Start with these four things tomorrow</h2>
+    <ol>
+      <li>Take every prescribed medicine — blood thinner, asthma inhaler, and water pill if you have one. Do not skip a blood thinner.</li>
+      <li>Walk 15 minutes, twice. After a treated clot, walking is usually safe and helps the legs pump blood and fluid back up.</li>
+      <li>Stop soda, juice, sweet tea, energy drinks, and alcohol. Drink water or unsweetened tea.</li>
+      <li>Cook one dinner with protein and vegetables, and do not add salt at the stove or table.</li>
+    </ol>
+
+    <h2>What “better” looks like</h2>
+    <p>You do not need a perfect weight. A steady loss of about ½ to 1 pound a week is enough. The same 5–10% drop that helps the liver also tends to help asthma, clotting risk, and swelling.</p>
+    <div class="stats">
+      <div class="stat"><b>5%</b><span>less fat in the liver</span></div>
+      <div class="stat"><b>7–10%</b><span>less liver inflammation</span></div>
+      <div class="stat"><b>10%+</b><span>better chance of reversing scarring</span></div>
+    </div>
+    <p>Example: if you weigh 220 pounds, 5% is about 11 pounds. Judge progress by a 7-day average weight, waist, and how clothes fit — swelling can make the scale jump overnight.</p>
+
+    <h2>Every day (the operating system)</h2>
+    <ul>
+      <li>Medicines exactly as prescribed. Ask a pharmacist to watch your inhaler technique once.</li>
+      <li>Walk most days, building toward 150 minutes a week (for example, 30 minutes on 5 days, or several 10–15 minute bouts).</li>
+      <li>Twice a week, do simple strength work: sit-to-stands, wall push-ups, glute bridges, and calf raises. Calf raises help the veins after a clot.</li>
+      <li>Keep sodium under 2,300 mg a day (about 1 teaspoon of salt from all food, not just the shaker). If your doctor wants a tighter swelling target, aim near 1,500 mg.</li>
+      <li>No alcohol while the liver is fatty. No smoking or vaping.</li>
+      <li>Sleep 7–9 hours. If you snore, gasp, or stay sleepy in the day, ask about sleep apnea — it often rides along with this set of problems.</li>
+    </ul>
+    <div class="box warn">
+      <strong>Do not add these on your own</strong>
+      Do not start compression stockings, water pills, or “liver detox” supplements unless your clinician says so. Skip ibuprofen and naproxen unless approved — they can raise bleeding risk on blood thinners, worsen some asthma, and hold onto fluid.
+    </div>
+
+    <h2>A default day</h2>
+    <dl class="day">
+      <dt>Wake</dt>
+      <dd>Use the bathroom, weigh yourself, take medicines, use your controller inhaler, put stockings on if prescribed — before your legs hang down for long.</dd>
+      <dt>Breakfast</dt>
+      <dd>Protein plus fiber: eggs or Greek yogurt, berries, oats or whole-grain toast. Coffee or tea with no sugar. No juice.</dd>
+      <dt>Morning</dt>
+      <dd>Walk 10–20 minutes. If you sit at a desk, stand or pump your ankles every 45 minutes.</dd>
+      <dt>Lunch</dt>
+      <dd>Half the plate vegetables, a palm of protein (beans, fish, chicken, tofu), olive oil. Leftovers beat takeout.</dd>
+      <dt>Afternoon</dt>
+      <dd>Second short walk, or a 20-minute strength session on Monday, Wednesday, and Friday.</dd>
+      <dt>Before harder exercise</dt>
+      <dd>Warm up 10–15 minutes. Use your pre-exercise inhaler if your doctor told you to. Stop for chest tightness; use your reliever.</dd>
+      <dt>Dinner</dt>
+      <dd>Same plate as lunch, earlier rather than later. Season with lemon, garlic, herbs, pepper — not salt. Finish eating about 3 hours before bed if you have heartburn or night asthma.</dd>
+      <dt>Evening</dt>
+      <dd>Legs up above heart level 20–30 minutes if you can lie back without getting short of breath. Keep swollen skin clean and moisturized. Reliever inhaler within reach. 7–9 hours of sleep. No alcohol.</dd>
+    </dl>
+
+    <h2>The 12 weeks</h2>
+    <table>
+      <thead>
+        <tr><th>Weeks</th><th>What to do</th><th>You are on track if</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1–2</td>
+          <td>Lock in medicines. Get walking and compression cleared if needed. Walk 10–20 minutes twice a day. Cut alcohol and sugary drinks. Notice where salt hides in your food. Log morning weight.</td>
+          <td>No missed blood-thinner or controller doses. Walks most days. You know your salt sources.</td>
+        </tr>
+        <tr>
+          <td>3–6</td>
+          <td>Mediterranean-style food at two meals a day. 150 minutes of walking a week. Strength twice a week. Legs up after long sitting. Use an asthma warm-up every workout.</td>
+          <td>Minutes are logged. Two strength days. Most dinners are cooked at home.</td>
+        </tr>
+        <tr>
+          <td>7–12</td>
+          <td>If swelling is stable and weight is flat, eat a little less (a smaller starch portion is enough). Add a third strength day if you recover well. One longer weekend walk. Recheck labs with your clinician.</td>
+          <td>Down about 3–7% from a “dry” week-1 weight, or a smaller waist if the scale is noisy from fluid. Easier stairs. Fewer heavy-leg days.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>After week 12, keep the same habits. Liver and vein changes take months. If 5% is in and you feel well, continue slowly toward 7–10%.</p>
+
+    <h2>Fatty liver</h2>
+    <p>The modern name is MASLD (metabolic fatty liver). Food and walking are still the main treatment.</p>
+    <ul>
+      <li>Eat vegetables, fruit, beans, fish, olive oil, nuts, yogurt, and whole grains.</li>
+      <li>Cut soda, juice, and ultra-processed snacks. Liquid sugar is a strong driver of liver fat.</li>
+      <li>Limit fried food, processed meats, and heavy cream sauces.</li>
+      <li>Alcohol: none until the liver has improved. There is no helpful dose with a fatty liver.</li>
+      <li>Move at least 150 minutes a week. Break up long sitting.</li>
+    </ul>
+    <table>
+      <thead><tr><th>Instead of</th><th>Use</th></tr></thead>
+      <tbody>
+        <tr><td>Soda, sweet tea, juice, energy drinks</td><td>Water, unsweetened tea, sparkling water</td></tr>
+        <tr><td>Pastry or sweet cereal</td><td>Eggs or Greek yogurt with berries and oats</td></tr>
+        <tr><td>Deli sandwich and chips</td><td>Bean or tuna salad with olive oil and vegetables</td></tr>
+        <tr><td>Fried takeout</td><td>Sheet-pan fish or chicken with vegetables</td></tr>
+        <tr><td>Evening wine</td><td>Herbal tea or sparkling water</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Blood clot (DVT)</h2>
+    <div class="box stop">
+      <strong>The blood thinner is the treatment</strong>
+      Walking and weight loss help, but they do not replace anticoagulation. If you miss a dose, follow the drug’s instructions or call the prescribing clinic. Do not double up unless told.
+    </div>
+    <ul>
+      <li>Walk every day. The calf muscle is the pump that returns blood from the legs.</li>
+      <li>If you sit more than an hour (desk, car, plane): stand, walk, or do 20–30 ankle pumps (point and flex).</li>
+      <li>Drink water unless a heart or kidney doctor gave you a fluid limit.</li>
+      <li>Do not smoke.</li>
+      <li>Stockings: not required for everyone. They can help a heavy, swollen leg if your clinician approves. A common starting pressure is 20–30 mmHg, knee-high, on before you get out of bed, off at night.</li>
+      <li>Do not use compression if you have poorly controlled heart failure, poor arterial circulation, or an infected leg — get cleared first.</li>
+    </ul>
+
+    <h2>Swelling (edema)</h2>
+    <p>If both legs, the belly, or the face swell — especially with breathlessness — the cause needs a name (heart, kidney, liver, veins, medicines, or sleep apnea). Salt and elevation help. They do not replace that workup.</p>
+    <ul>
+      <li>Weigh every morning after using the bathroom, before breakfast, same clothes. Rising weight is often fluid, not fat.</li>
+      <li>Sodium hides in bread, deli meat, canned soup, sauces, cheese, and restaurant meals. Cook at home.</li>
+      <li>Do not severely restrict water on your own.</li>
+      <li>Elevate legs above heart level 2–3 times a day for 20–30 minutes if you are not short of breath lying flat.</li>
+      <li>Keep swollen skin moisturized and protected. Cracks can turn into infection. Wear shoes if the feet swell.</li>
+    </ul>
+
+    <h2>Asthma</h2>
+    <p>Keep using your daily controller inhaler. A rescue inhaler alone is not a full plan. Losing 5–10% of body weight often improves control. Exercise is encouraged, not forbidden.</p>
+    <ul>
+      <li>If you need the reliever more than twice a week (except before exercise, if directed), call the clinic — control is not good enough.</li>
+      <li>Have a written action plan: green / yellow / red, with exact inhaler steps.</li>
+      <li>Warm up 10–15 minutes before harder activity. In cold, dry air, cover your mouth and nose. Skip outdoor workouts on high-pollen or high-pollution days.</li>
+      <li>Quit all smoke and vape exposure.</li>
+      <li>Heartburn and sleep apnea commonly keep asthma “stuck.” Last meal 3 hours before bed; ask about a sleep study if you snore.</li>
+    </ul>
+
+    <h2>Food backbone (shopping)</h2>
+    <ul>
+      <li><strong>Protein:</strong> eggs, plain Greek yogurt, canned tuna or salmon in water, chicken, tofu, lentils, beans (no-salt or rinsed).</li>
+      <li><strong>Plants and fats:</strong> frozen mixed vegetables, leafy greens, tomatoes, berries, oats, extra-virgin olive oil, unsalted walnuts or almonds.</li>
+      <li><strong>Flavor:</strong> lemon, vinegar, garlic, pepper, paprika, cumin, fresh herbs, no-salt blends. Sparkling water.</li>
+    </ul>
+    <p>Build the plate: half vegetables, a palm or two of protein, a measured portion of whole grains or beans, olive oil in a measured amount. If you take warfarin, you can still eat greens — keep the amount consistent week to week and keep your INR checks.</p>
+
+    <h2>Weekly scorecard</h2>
+    <table>
+      <thead><tr><th>Habit</th><th>Target</th></tr></thead>
+      <tbody>
+        <tr><td>Controller inhaler and blood thinner</td><td>Every prescribed dose</td></tr>
+        <tr><td>Walking</td><td>150+ minutes a week</td></tr>
+        <tr><td>Strength</td><td>2–3 sessions</td></tr>
+        <tr><td>Sugary drinks and alcohol</td><td>Zero</td></tr>
+        <tr><td>Restaurant or ultra-processed meals</td><td>3 or fewer a week</td></tr>
+        <tr><td>Morning weight</td><td>Daily log; watch the 7-day average</td></tr>
+        <tr><td>Night asthma or extra reliever use</td><td>Write it down; call if it is rising</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Questions for your clinicians</h2>
+    <ul>
+      <li>Primary care / liver: FIB-4 score, ultrasound or FibroScan, A1c, cholesterol.</li>
+      <li>Clot clinic: how long to stay on the blood thinner; whether stockings are right; a travel plan.</li>
+      <li>If swelling is widespread: heart, kidney, and protein tests; a daily weight call-in number; any fluid limit.</li>
+      <li>Asthma: inhaler technique, written action plan, exercise inhaler, sleep-apnea screen.</li>
+    </ul>
+
+    <div class="box ok">
+      <strong>If you only remember one paragraph</strong>
+      Take the medicines. Walk every day. Eat protein and vegetables cooked at home with little salt. Drink no alcohol and no sweet drinks. Sleep. Call for chest pain, sudden breathlessness, or a suddenly worse single leg.
+    </div>
+
+    <footer>
+      This handout summarizes commonly used lifestyle guidance (including EASL–EASD–EASO 2024 fatty-liver guidelines, GINA asthma guidance, and post-thrombotic care recommendations). It is not personal medical advice and is not a diagnosis or prescription. Follow the plan your own clinicians set for you.
+    </footer>
+  </main>
+</body>
+</html>
