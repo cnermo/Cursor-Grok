@@ -27,5 +27,7 @@ venv/
 __pycache__/
 *.pyc
 
-# Logs
-*.log
+# Expo
+.expo/
+expo-env.d.ts
+*.tsbuildinfo
