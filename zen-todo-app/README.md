@@ -14,12 +14,14 @@ npm run web
 
 Expo Go: `npm start`, then scan the QR code.
 
+Live web (Vercel): https://zen-todo-app-aot7.vercel.app
+
 ## Scripts
 
 - `npm run web` — Metro web
 - `npm run android` — Expo Android
 - `npm run export:web` — static web export to `dist/` (Vercel)
-- `npx eas-cli build --platform android --profile preview` — internal APK (needs an Expo account)
+- `npx eas-cli login && npx eas-cli build --platform android --profile preview` — internal APK (Expo account required; `eas.json` preview profile is already configured)
 
 ## Features (v1)
 
