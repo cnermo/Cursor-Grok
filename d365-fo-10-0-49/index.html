@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finance and Operations 10.0.49</title>
+  <meta name="description" content="Report of new and changed features in Dynamics 365 Finance and Operations 10.0.49, September 2026, build 10.0.2790.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f3f0;
+      --surface: #fffcf8;
+      --text: #1c1b19;
+      --muted: #5c5852;
+      --faint: #7a756d;
+      --line: #e2ddd4;
+      --accent: #1f4d3a;
+      --accent-ink: #f7f6f2;
+      --warn-bg: #f8f1e4;
+      --warn-line: #e4d3ae;
+      --row: #f7f5f1;
+      --focus: #1f4d3a;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 "Segoe UI", system-ui, sans-serif; }
+    .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 64px; }
+    h1 { margin: 0 0 8px; font-size: 1.75rem; line-height: 1.2; font-weight: 650; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 8px; font-size: 1.15rem; font-weight: 650; }
+    .lede { margin: 0; max-width: 72ch; color: var(--muted); }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 24px 0; }
+    .stat { background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; }
+    .stat strong { display: block; font-size: 1.35rem; font-weight: 650; }
+    .stat span { color: var(--muted); font-size: 0.875rem; }
+    .callout { background: var(--warn-bg); border: 1px solid var(--warn-line); padding: 14px 16px; }
+    .callout p { margin: 0; }
+    section { margin-top: 28px; }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 0.9375rem; }
+    .table-scroll table { min-width: 680px; }
+    th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+    th { font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--faint); }
+    tbody tr:nth-child(even) { background: var(--row); }
+    caption { caption-side: bottom; text-align: left; color: var(--faint); font-size: 0.8125rem; padding: 8px 0; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+    button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 999px; padding: 6px 12px; }
+    button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .catalog { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(280px, 1fr); gap: 16px; align-items: start; }
+    .catalog-table-wrap { overflow: auto; max-height: 640px; border: 1px solid var(--line); background: var(--surface); }
+    .catalog-table-wrap th { position: sticky; top: 0; background: var(--surface); }
+    .tool-btn { border-radius: 999px; padding: 4px 10px; font-size: 0.875rem; text-align: left; }
+    tr.is-open { outline: 1px solid var(--accent); outline-offset: -1px; }
+    .detail { background: var(--surface); border: 1px solid var(--line); padding: 16px; position: sticky; top: 16px; }
+    .detail h3 { margin: 0; font-size: 1.05rem; }
+    .kicker { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .badge { font-size: 0.75rem; border: 1px solid var(--line); border-radius: 999px; padding: 2px 8px; color: var(--muted); white-space: nowrap; }
+    .meta, .count, footer, .note { color: var(--faint); font-size: 0.875rem; }
+    .detail h4 { margin: 16px 0 4px; font-size: 0.95rem; }
+    .detail p { margin: 0; }
+    details { background: var(--surface); border: 1px solid var(--line); padding: 10px 14px; margin-top: 10px; }
+    summary { cursor: pointer; font-weight: 650; }
+    ul { margin: 8px 0 0; padding-left: 1.2rem; }
+    footer { margin-top: 32px; max-width: 85ch; }
+    @media (max-width: 800px) {
+      .stats, .catalog { grid-template-columns: 1fr; }
+      .detail { position: static; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>Finance and Operations 10.0.49</h1>
+      <p class="lede">What changed in the September 2026 quality update, build 10.0.2790, and what to test before production takes it automatically.</p>
+    </header>
+
+    <section class="stats" aria-label="Release dates">
+      <div class="stat"><strong>Sep 11</strong><span>Self-update opened</span></div>
+      <div class="stat"><strong>Oct 2</strong><span>First production auto-update</span></div>
+      <div class="stat"><strong>Nov 1</strong><span>Second auto-update wave</span></div>
+      <div class="stat"><strong>May 21, 2027</strong><span>End of service</span></div>
+    </section>
+
+    <aside class="callout">
+      <h2>Sandbox this before October 2</h2>
+      <p>Self-update has been available since September 11, 2026. The first production auto-update starts October 2, and the second wave starts November 1. The largest behavior change is not a new screen. Customer and vendor netting, advanced bank reconciliation, and several Inventory Visibility integrations become mandatory and can no longer be turned off.</p>
+    </aside>
+
+    <section>
+      <h2>Test these before you take the build</h2>
+      <div class="table-scroll">
+        <table>
+          <caption>Upgrade checks for 10.0.49.</caption>
+          <thead><tr><th>Area</th><th>What changes</th><th>Why it matters</th></tr></thead>
+          <tbody id="checks"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>New and expanded capabilities</h2>
+      <div class="filters" id="filters" role="toolbar" aria-label="Filter by product"></div>
+      <p class="count" id="count"></p>
+      <div class="catalog">
+        <div class="catalog-table-wrap">
+          <table>
+            <caption>Select a capability to read the change and the test note.</caption>
+            <thead><tr><th>Capability</th><th>Product</th><th>Enabled by</th></tr></thead>
+            <tbody id="catalog-body"></tbody>
+          </table>
+        </div>
+        <article class="detail" id="detail" aria-live="polite"></article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Features that lock on</h2>
+      <p class="note">These still show in Feature management, but 10.0.49 no longer lets you turn them off.</p>
+      <details open>
+        <summary>Finance, now mandatory (38)</summary>
+        <ul id="finance-mandatory"></ul>
+      </details>
+      <details>
+        <summary>Supply Chain Management, now mandatory (12)</summary>
+        <ul id="scm-mandatory"></ul>
+      </details>
+    </section>
+
+    <section>
+      <h2>Removed or deprecated with this release</h2>
+      <div class="table-scroll">
+        <table>
+          <caption>Removals announced for 10.0.49.</caption>
+          <thead><tr><th>Item</th><th>Status</th><th>Replacement</th></tr></thead>
+          <tbody id="removed"></tbody>
+        </table>
+      </div>
+      <p class="note">Inquire into inventory with Copilot was removed earlier, in 10.0.44, not in this release. Invoice Capture AI header derivation is on the 2026 wave 1 plan as a 10.0.49 preview and is not listed in the Finance what's-new table, so confirm it in Feature management after the update.</p>
+    </section>
+
+    <footer>
+      Sources: Microsoft Learn what's new for Finance 10.0.49, Supply Chain Management 10.0.49, and platform update 10.0.49; service update availability for the September 11, October 2, November 1, and May 21, 2027 dates; Supply Chain Management removed-and-deprecated features for the 10.0.49 section. Checked September 21, 2026. Bug fixes are in the Lifecycle Services KB for this build, not in these articles.
+    </footer>
+  </main>
+  <script>
+    const filters = ["All", "Finance", "Supply chain", "Platform"];
+    const checks = [
+      ["Cash", "Payment journals can post before settlement finishes", "Open invoices stay open until a queued settlement runs"],
+      ["Bank", "Match results can wait for approval, and bridge selection is filtered", "Unattended matching jobs may stop or return a shorter list"],
+      ["Netting", "Customer and vendor netting is mandatory", "Custom settlement code that assumed netting was off will run the new path"],
+      ["Warehouse", "One owner per location, ASN despatch advice, and status mapping are on", "Mixed-owner locations and inbound EDI can fail on day one"],
+      ["Inventory Visibility", "ATP, reservations, adjustments, and warehouse items are mandatory", "External inventory sync can no longer be disabled"],
+      ["Costing", "Global Inventory Accounting is deprecated", "Support ends July 1, 2027. Production users need a transition plan"],
+      ["Print", "ER destinations honor the print-management copy count", "A document set to 3 copies will print 3 copies"],
+      ["X++ packages", "Four Azure management assemblies were removed", "Any model that referenced them must reference them itself"]
+    ];
+    const financeMandatory = [
+      "Performance improvement for the Vendor payment BI report",
+      "(Poland) Mandatory split payment automation",
+      "Customer and vendor netting",
+      "Change missed maturity date when settling postdated checks",
+      "Avoid generating an empty payment journal from payment proposal automation",
+      "Improve card payment processing in customer payment",
+      "Cash flow sales tax authority payments",
+      "(Italy) Protest handling for bills of exchange",
+      "(Italy) Improved inquiry on debit and credit settlement",
+      "(Norway) Payment proposal dimension control",
+      "(Eastern Europe) Common settlement amount calculation",
+      "(Poland) Split realized exchange differences between net and VAT",
+      "(Brazil) Discount calculation when the payment date changes",
+      "Maturity date validation when posting a payment journal with postdated checks",
+      "Check number validation",
+      "Exchange rate type for bank foreign currency revaluation",
+      "Cash position inquiry",
+      "Cash control",
+      "Mark all bank transactions as cleared in account reconciliation",
+      "Prepayment and posting profile when generating a payment journal in advanced bank reconciliation",
+      "Reverse the correction amount when bank statements confirm electronic payments",
+      "Use the latest exchange rate to post bank transactions",
+      "Skip reversal-flag validation when matching reversal statement lines",
+      "Post new transactions in bank reconciliation",
+      "Default descriptions for advanced bank reconciliation",
+      "Batch mode for bank statement and statement-line posting",
+      "Bank transactions page performance improvement",
+      "Reverse a posted bank statement that has new transactions",
+      "Update cleared dates for reconciled documents",
+      "Automatically clear bridged transactions through advanced bank reconciliation",
+      "Time zone option on BAI2 bank statement import",
+      "(Brazil) Mandatory bank transaction description",
+      "Exchange rate type for AP and AR foreign currency revaluation",
+      "ER model mappings always honor Run draft",
+      "Add and synchronize a tax hierarchy version in batch",
+      "(India) Include TCS in the total invoice value",
+      "New calculation choice for the VAT register filling date",
+      "Inherit an empty tax base on multi-line vendor invoices when reverse charge applies"
+    ];
+    const scmMandatory = [
+      "Aggregated material availability check",
+      "Credit limit check on work order dispatch",
+      "Advanced quality management",
+      "Inventory Visibility integration with ATP",
+      "Inventory Visibility integration with reservation offset",
+      "Inventory Visibility transaction integration",
+      "Warehouse items in Inventory Visibility",
+      "Dispense management",
+      "Recalculate delivery dates when a direct delivery is created",
+      "Lookup search for the sales external item identifier",
+      "Consolidate vendor invoices for the same vendor in a rebate deal",
+      "Post vendor rebate output to the purchase order vendor"
+    ];
+    const removed = [
+      ["Follow-up questions in the Copilot sidecar", "Removed", "None. The preview never reached general availability"],
+      ["Global Inventory Accounting", "Deprecated", "A future multi-ledger costing solution. Support ends July 1, 2027"],
+      ["Four Azure management and recommendation assemblies", "Removed from the platform", "Packages that used them must include those assemblies themselves"],
+      ["Visual Studio 2022 for X++", "Announced, not yet enforced", "Visual Studio 2026 only, starting with platform update 75"]
+    ];
+    const features = [
+      ["ar-prepay", "Line-level customer prepayments", "Finance", "Accounts receivable", "Parameter", "A new Accounts receivable parameter chooses header-level or line-level prepayment calculation. It appears only when Prepayment customer invoice is already enabled.", "This is a parameter, not a feature flag. Test invoice totals for customers who mix prepayment lines with regular lines."],
+      ["budget-date", "Automatic accounting date advancement", "Finance", "Budgeting", "Feature management", "If a workflow-enabled purchase requisition or purchase order has an accounting date in a closed or on-hold fiscal period, the date moves to the next open period in the same fiscal year and budget control is checked again.", "The document stays in the same fiscal year. It does not roll into the next year."],
+      ["budget-corrupt", "Detect corrupted budget-control tracking", "Finance", "Budgeting", "Feature management", "Budget control data maintenance can find orphaned tracking records and broken links between commitments and the documents that relieve them, before you run the existing repair.", "Detection does not post corrections by itself."],
+      ["budget-post", "Auto-post general budget reservations", "Finance", "Budgeting", "Feature management", "A budgeting workflow can post a general budget reservation as soon as approval finishes, instead of waiting for a separate manual post.", "Posting will no longer wait for a clerk once the workflow option is included."],
+      ["encumbrance", "Exclude closing periods from outstanding encumbrance", "Finance", "Budgeting", "Feature management", "The Outstanding encumbrance report can leave out transactions posted to closing periods.", "Compare a report with and without the option before year-end close."],
+      ["budget-indicator", "Keep budget-check indicators after finalization", "Finance", "Budgeting", "Feature management", "The budget-check mark stays visible after a purchase order or general budget reservation line is partly consumed and then finalized.", "Users may read old documents differently after this is on."],
+      ["delay-settle", "Delay settlement from payment journals", "Finance", "Cash and bank", "Admin", "Customer and vendor payment journals can post even when settlement cannot finish. Settlement is queued.", "Open payments and open invoices can exist together until the queue finishes."],
+      ["bank-preview", "Preview bank-reconciliation matches", "Finance", "Cash and bank", "Admin", "Matching-rule results can be reviewed and approved before transactions are posted and marked matched.", "A process that expected immediate matching will stop at the preview."],
+      ["bridge-clear", "Clear bridged payments in bank reconciliation", "Finance", "Cash and bank", "Admin", "Bank reconciliation can clear bridged transactions that centralized vendor payments created.", "Confirm it covers the bridge documents your payment process actually creates."],
+      ["bridge-filter", "Faster bridge-transaction selection", "Finance", "Cash and bank", "Admin", "Bank clearance asks for account, party, reference, check number, and dates before it loads bridge transactions.", "Filters that are too narrow will hide lines that used to appear in the full list."],
+      ["fa-india", "India fixed-asset reporting-currency depreciation", "Finance", "Fixed assets", "Feature management", "India income-tax depreciation proposals fill reporting-currency amounts from configured exchange rates.", "Cannot be enabled if any fixed-asset transaction has a zero reporting-currency amount."],
+      ["fa-adjust", "Fixed-asset reporting-currency adjustment", "Finance", "Fixed assets", "Preview", "Generate, review, and post reporting-currency adjustment entries for fixed assets.", "Still a preview. Post a sample in a copy of production first."],
+      ["fa-split", "Reporting currency on fixed-asset splits", "Finance", "Fixed assets", "Feature management", "Splitting a fixed asset carries the original exchange-rate information onto the new assets.", "Compare reporting-currency net book value before and after a split."],
+      ["subs", "Subscription billing termination adjustment", "Finance", "Subscription billing", "Preview", "Corrects multi-element revenue allocation when a contract is updated or terminated.", "Preview. Recalculate a terminated contract whose expected revenue you already know."],
+      ["france", "France e-reporting", "Finance", "Regulatory", "Feature management", "Reports specified transactions to the French tax authority through an approved intermediary platform.", "This is the reporting leg of the e-invoicing reform, not the full invoicing rollout."],
+      ["gs1", "GS1 barcodes in Electronic Reporting", "Finance", "Electronic reporting", "On by default", "ER barcode data sources can emit GS1-128, GS1 DataMatrix, and GS1 QR Code.", "Existing formats do not change until a format uses one of the new types."],
+      ["divmod", "DIV and MOD in ER formulas", "Finance", "Electronic reporting", "On by default", "ER formulas gain integer division and remainder.", "Old formulas are unchanged until someone uses the new functions."],
+      ["copies", "Print-management copy count for ER", "Finance", "Electronic reporting", "On by default", "ER destinations honor the Number of copies in Print management and in the ad-hoc print dialog.", "A document set to 3 copies will print 3 copies."],
+      ["er-memory", "Lower memory use for large ER runs", "Finance", "Electronic reporting", "Feature management", "The reporting engine keeps fewer temporary objects so peak memory drops on large runs.", "Compare a regulatory file with and without the feature before you trust the output."],
+      ["er-validate", "Validate many ER versions at once", "Finance", "Electronic reporting", "Feature management", "Validate multiple ER configuration versions in one operation and keep version-level history.", "History is new persisted data. It does not change which format posts."],
+      ["fin-tags", "Financial tags on procurement documents", "Supply chain", "Procurement", "Feature management", "Financial tags can be used on procurement documents, including purchase order invoicing.", "Map the tags before you post a tagged invoice to the ledger."],
+      ["inv-consol", "Optimized inventory transaction consolidation", "Supply chain", "Inventory", "Preview", "Preview consolidation of inventory transactions.", "Do not enable it on a database you cannot restore."],
+      ["pickup", "Closed-for-pickup on the transport calendar", "Supply chain", "Master planning", "Feature management", "Planning Optimization can respect open-for-pickup when it plans transfer orders.", "Planned transfer dates can move."],
+      ["sub-bom", "Sub-BOM and sub-route in forecast reduction", "Supply chain", "Master planning", "Feature management", "Planning Optimization can consider BOM and route, including sub-levels, when it reduces forecasts.", "Forecast consumption changes for items with phantoms or sub-routes."],
+      ["time-fence", "Coverage time fence on derived requirements", "Supply chain", "Master planning", "Feature management", "Planning Optimization can filter derived requirements by the coverage time fence.", "Requirements outside the fence drop out of the plan."],
+      ["supplier", "Supplier Engagement", "Supply chain", "Procurement", "Preview", "Preview workspace for managing supplier relationships.", "Separate from the Procurement Agent that drafts vendor email."],
+      ["rfq-asset", "RFQ bids update fixed-asset fields", "Supply chain", "Procurement", "On by default", "Fixed-asset fields on a purchase requisition can be updated from the RFQ bid.", "A bid can change asset fields a buyer already entered."],
+      ["same-batch", "Same-batch raw materials", "Supply chain", "Production", "Preview", "Production and batch orders can be forced to reserve the same batch of a raw material.", "A strict rule leaves the order unreserved when that batch is short."],
+      ["asn", "Import inbound ASNs as despatch advice", "Supply chain", "Warehouse", "On by default", "Inbound advance shipping notices can be imported as despatch-advice messages.", "Confirm the EDI map still lands on the document type receiving expects."],
+      ["owners", "One owner per warehouse location", "Supply chain", "Warehouse", "On by default", "A location can be blocked from holding inventory for more than one owner.", "Mixed-owner locations will fail putaway or receipt."],
+      ["inv-status", "Source-system inventory status mapping", "Supply chain", "Warehouse", "On by default", "Inventory status values from a source system can be mapped into Supply Chain Management.", "An unmapped status will not silently keep the old value."],
+      ["batch-telemetry", "Batch job occurrence telemetry", "Platform", "Batch", "Flight", "Application Insights can show a whole batch job, not only each task. Backported to platform builds 7.0.8199.5 and later.", "Ask Microsoft support if BatchJobOccurrenceTelemetryFlight is off."],
+      ["mcp-data", "ERP MCP data-tool improvements", "Platform", "Agents", "PQU-1", "Data tools accept arithmetic between aggregates, reject bad field names clearly, return inherited action parameters, and honor query timeouts.", "Ships in proactive quality update 1, platform build 7.0.8199.29 and later."],
+      ["mcp-form", "ERP MCP form-tool improvements", "Platform", "Agents", "PQU-1", "Form tools can read and set radio and check groups, resolve controls and menu labels more reliably, and use document upload and the document viewer.", "Same PQU-1 build. Retest agents that set lookup controls."],
+      ["mcp-hitl", "Human-in-the-loop annotations on MCP tools", "Platform", "Agents", "PQU-1", "Each ERP MCP tool declares whether it is read-only, destructive, idempotent, or open-world.", "A custom agent that ignores tool metadata will not pause."]
+    ];
+
+    let filter = "All";
+    let selectedId = "delay-settle";
+
+    function cell(value) {
+      const td = document.createElement("td");
+      td.textContent = value;
+      return td;
+    }
+    function fill(id, rows) {
+      const body = document.getElementById(id);
+      rows.forEach((row) => {
+        const tr = document.createElement("tr");
+        row.forEach((value) => tr.appendChild(cell(value)));
+        body.appendChild(tr);
+      });
+    }
+    function list(id, items) {
+      const ul = document.getElementById(id);
+      items.forEach((item) => {
+        const li = document.createElement("li");
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+    }
+    function visible() {
+      return features.filter((feature) => filter === "All" || feature[2] === filter);
+    }
+    function render() {
+      const rows = visible();
+      if (rows.length && !rows.some((feature) => feature[0] === selectedId)) selectedId = rows[0][0];
+      const bar = document.getElementById("filters");
+      bar.replaceChildren();
+      filters.forEach((name) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = name;
+        button.setAttribute("aria-pressed", String(name === filter));
+        button.addEventListener("click", () => { filter = name; render(); });
+        bar.appendChild(button);
+      });
+      document.getElementById("count").textContent = rows.length + " of " + features.length + " items";
+      const body = document.getElementById("catalog-body");
+      body.replaceChildren();
+      rows.forEach((feature) => {
+        const tr = document.createElement("tr");
+        if (feature[0] === selectedId) tr.className = "is-open";
+        const nameCell = document.createElement("td");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "tool-btn";
+        button.textContent = feature[1];
+        button.setAttribute("aria-pressed", String(feature[0] === selectedId));
+        button.addEventListener("click", () => { selectedId = feature[0]; render(); });
+        nameCell.appendChild(button);
+        tr.append(nameCell, cell(feature[2]), cell(feature[4]));
+        body.appendChild(tr);
+      });
+      const feature = features.find((item) => item[0] === selectedId);
+      const panel = document.getElementById("detail");
+      panel.replaceChildren();
+      const kicker = document.createElement("div");
+      kicker.className = "kicker";
+      const title = document.createElement("h3");
+      title.textContent = feature[1];
+      const badge = document.createElement("span");
+      badge.className = "badge";
+      badge.textContent = feature[4];
+      kicker.append(title, badge);
+      const meta = document.createElement("p");
+      meta.className = "meta";
+      meta.textContent = feature[2] + " · " + feature[3];
+      const does = document.createElement("p");
+      does.textContent = feature[5];
+      const heading = document.createElement("h4");
+      heading.textContent = "Watch-outs";
+      const watch = document.createElement("p");
+      watch.textContent = feature[6];
+      panel.append(kicker, meta, does, heading, watch);
+    }
+    fill("checks", checks);
+    fill("removed", removed);
+    list("finance-mandatory", financeMandatory);
+    list("scm-mandatory", scmMandatory);
+    render();
+  </script>
+</body>
+</html>

@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin tools for Dynamics 365 Finance and Operations</title>
+  <meta name="description" content="September 2026 guide to administering Dynamics 365 Finance and Operations in the Power Platform admin center and Lifecycle Services.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f3f0;
+      --surface: #fffcf8;
+      --text: #1c1b19;
+      --muted: #5c5852;
+      --faint: #7a756d;
+      --line: #e2ddd4;
+      --accent: #1f4d3a;
+      --accent-ink: #f7f6f2;
+      --warn-bg: #f8f1e4;
+      --warn-line: #e4d3ae;
+      --row: #f7f5f1;
+      --focus: #1f4d3a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.5 "Segoe UI", system-ui, sans-serif;
+    }
+
+    a { color: var(--accent); }
+
+    .wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 64px;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 1.75rem;
+      line-height: 1.2;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .lede {
+      margin: 0;
+      max-width: 68ch;
+      color: var(--muted);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin: 24px 0;
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    .callout {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-line);
+      padding: 14px 16px;
+      margin-bottom: 28px;
+    }
+
+    .callout h2,
+    section h2 {
+      margin: 0 0 6px;
+      font-size: 1.15rem;
+      font-weight: 650;
+    }
+
+    .callout p { margin: 0; }
+
+    section { margin-top: 28px; }
+
+    .table-scroll {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      font-size: 0.9375rem;
+    }
+
+    .table-scroll table {
+      border: 0;
+      min-width: 720px;
+    }
+
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--faint);
+      font-weight: 650;
+      background: var(--surface);
+    }
+
+    tbody tr:nth-child(even) { background: var(--row); }
+
+    caption {
+      caption-side: bottom;
+      text-align: left;
+      color: var(--faint);
+      font-size: 0.8125rem;
+      padding-top: 8px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 8px;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 6px 12px;
+    }
+
+    button[aria-pressed="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .catalog {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(280px, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .catalog-table-wrap {
+      overflow: auto;
+      max-height: 640px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .catalog-table-wrap table { border: 0; }
+
+    .catalog-table-wrap th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .tool-btn {
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+
+    tr.is-open { outline: 1px solid var(--accent); outline-offset: -1px; }
+
+    .detail {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 16px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .detail-kicker {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .detail h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .meta {
+      margin: 0 0 10px;
+      color: var(--faint);
+      font-size: 0.875rem;
+    }
+
+    .detail h4 {
+      margin: 16px 0 4px;
+      font-size: 0.95rem;
+    }
+
+    .detail p { margin: 0; }
+
+    .count, .hint {
+      margin: 0 0 12px;
+      color: var(--faint);
+      font-size: 0.875rem;
+    }
+
+    footer {
+      margin-top: 32px;
+      color: var(--faint);
+      font-size: 0.8125rem;
+      max-width: 80ch;
+    }
+
+    @media (max-width: 800px) {
+      .stats,
+      .catalog { grid-template-columns: 1fr; }
+      .detail { position: static; }
+      .wrap { width: min(1120px, calc(100% - 20px)); }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>Admin tools for Finance and Operations</h1>
+      <p class="lede">Where environment, capacity, support, and project administration actually live in September 2026, after Lifecycle Services stopped accepting new Finance, Supply Chain Management, and Project Operations cloud projects.</p>
+    </header>
+
+    <section class="stats" aria-label="Provisioning limits">
+      <div class="stat"><strong>16 Feb 2026</strong><span>New LCS projects frozen</span></div>
+      <div class="stat"><strong>1 GB + 1 GB</strong><span>Minimum to provision</span></div>
+      <div class="stat"><strong>20</strong><span>Character name limit</span></div>
+    </section>
+
+    <aside class="callout">
+      <h2>Two admin homes, on purpose</h2>
+      <p>A new unified environment has no Lifecycle Services project. An existing Lifecycle Services environment can still be linked to Dataverse, and then copy, backup, and delete have to be coordinated across both portals. Commerce, AX 2012 upgrades, on-premises, and tenant-to-tenant moves still start in Lifecycle Services.</p>
+    </aside>
+
+    <section id="job-guide">
+      <h2>Which console for this job</h2>
+      <div class="table-scroll">
+        <table>
+          <caption>Where to do common Finance and Operations admin jobs.</caption>
+          <thead>
+            <tr><th>Job</th><th>Go here</th><th>Do not assume</th></tr>
+          </thead>
+          <tbody id="jobs"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="catalog">
+      <h2>Catalog</h2>
+      <div class="filters" role="toolbar" aria-label="Filter by admin home" id="filters"></div>
+      <p class="count" id="count"></p>
+      <div class="catalog">
+        <div class="catalog-table-wrap">
+          <table>
+            <caption>Select a tool name to read what it does and what it does not cover.</caption>
+            <thead>
+              <tr><th>Tool</th><th>Home</th><th>Status</th></tr>
+            </thead>
+            <tbody id="catalog-body"></tbody>
+          </table>
+        </div>
+        <article class="detail" id="detail" aria-live="polite"></article>
+      </div>
+      <p class="hint">Select a tool name to open its detail. The filters above keep the list to one admin home.</p>
+    </section>
+
+    <section id="term-guide">
+      <h2>Lifecycle Services words in the new admin center</h2>
+      <div class="table-scroll">
+        <table>
+          <caption>Old Lifecycle Services names and what they are called in the Power Platform admin center.</caption>
+          <thead>
+            <tr><th>Lifecycle Services</th><th>Power Platform admin center</th><th>What changed</th></tr>
+          </thead>
+          <tbody id="terms"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      Sources: Microsoft Learn, Lifecycle Services project creation freeze (16 February 2026), unified admin experience for finance and operations apps, environment lifecycle terminology, support migration to the Power Platform admin center, and monitoring deprecation notes. Checked 21 September 2026.
+    </footer>
+  </main>
+
+  <script>
+    const homes = [
+      { id: "all", label: "All" },
+      { id: "ppac", label: "Power Platform admin center" },
+      { id: "lcs", label: "Lifecycle Services" },
+      { id: "other", label: "Other admin surfaces" }
+    ];
+
+    const jobs = [
+      ["New production, sandbox, or developer environment", "Power Platform admin center, ERP template", "A new Lifecycle Services implementation project"],
+      ["Refresh data, including code", "Power Platform admin center copy", "An LCS database refresh, which copied data only"],
+      ["Storage and the right to create another environment", "Licensing, Capacity add-ons", "A purchased sandbox slot"],
+      ["Support ticket", "Power Platform admin center Help + support", "The Lifecycle Services Support page, which is being retired"],
+      ["SQL blocking and on-demand SQL diagnostics", "Lifecycle Services, SQL Insights, for LCS environments", "That the old activity-log queries still run"],
+      ["Packages, builds, process docs, user accounts", "Azure DevOps, Business process catalog, Microsoft 365 admin center", "Asset library, BPM, or LCS organization users"]
+    ];
+
+    const terms = [
+      ["Deploy", "Provision", "Template or provisioning app, not an LCS environment slot"],
+      ["Database refresh", "Copy", "Code is copied with the data"],
+      ["Database export", "Backup", "Kept in the cloud, not a downloadable backup file"],
+      ["Point-in-time restore", "Restore", "Same idea, new name"],
+      ["Maintenance mode", "Admin mode", "Restricted admin state on a unified environment"],
+      ["Software deployable package", "Unified package", "Built and stored in Azure DevOps"],
+      ["Project Owner", "Power Platform administrator", "Assigned in Microsoft Entra"],
+      ["Deallocate / delete", "Delete", "Restore after delete is not available when the provisioning app is installed"]
+    ];
+
+    const tools = [
+      { id: "provision", name: "ERP environment templates", home: "ppac", homeLabel: "Power Platform admin center", status: "Current path for new work", does: "Create a Dataverse environment, enable Dynamics 365 apps, and pick an ERP template. Templates install the latest Finance, Supply Chain Management, Commerce, or Project Operations apps the admin's licenses allow. Unified types are production (UPE), sandbox (USE), and developer (UDE). Each environment has two URLs: one for customer-engagement apps and one for finance and operations.", watch: "Needs a license plus at least 1 GB of Dataverse database capacity and 1 GB of operations database capacity. The environment name cannot exceed 20 characters. The Azure region must support finance and operations or the install fails." },
+      { id: "provisioning-app", name: "Finance and Operations Provisioning App", home: "ppac", homeLabel: "Power Platform admin center", status: "Install on an existing environment", does: "Installs finance and operations onto an existing environment that already supports Dynamics 365 apps, including a version that is not the latest generally available build. Avoids standing up a second environment just to integrate.", watch: "Reset, and restore after delete, are not implemented while this app is installed. A region that Dataverse allows can still reject the finance and operations runtime." },
+      { id: "lifecycle-ops", name: "Copy, backup, restore, convert", home: "ppac", homeLabel: "Power Platform admin center", status: "Replaces LCS deploy actions", does: "Copy replaces database refresh and includes code as well as data. Backup replaces database export and stays in the cloud. Restore replaces point-in-time restore. A sandbox can be converted to production. Delete replaces deallocate.", watch: "You cannot download a .bak or .bacpac. Copy from an LCS cloud-hosted VM into a unified environment is not supported. A unified developer environment cannot be copied onto a sandbox or production. Sandbox-to-production copy is blocked; use convert to production." },
+      { id: "capacity", name: "Licensing and capacity", home: "ppac", homeLabel: "Power Platform admin center", status: "Tenant-wide, not slots", does: "Finance and operations licenses grant operations storage and Power Platform requests. Capacity is reviewed under Licensing, then Capacity add-ons, with an environment view and a table-level drill-down for finance and operations. Add-on storage and compute can be purchased. Transaction-less copy cuts sandbox storage.", watch: "Lifecycle Services sold a fixed sandbox and production slot. Here, running out of either Dataverse or operations capacity blocks the next environment. Clean up sandboxes before a migration copy." },
+      { id: "governance", name: "Data policies and environment groups", home: "ppac", homeLabel: "Power Platform admin center", status: "New control plane for ERP", does: "Data policies restrict which connectors can share data. Environment groups apply the same rules to a set of environments, so production and sandbox finance apps can follow one governance pattern instead of an LCS project checklist.", watch: "These policies govern the Power Platform environment around the ERP app. They do not replace X++ security roles inside Finance." },
+      { id: "support", name: "Help and support", home: "ppac", homeLabel: "Power Platform admin center", status: "Replacing the LCS Support page", does: "New and existing support requests are filed in the Power Platform admin center. Opening support from a Lifecycle Services project passes the project context across and temporarily grants an LCS User role.", watch: "That temporary role is going away. People who only have it cannot open Help + support if they go straight to the admin center. Partners must be delegated admins in the customer tenant. Being on the LCS project is no longer enough." },
+      { id: "admin-mode", name: "Admin mode", home: "ppac", homeLabel: "Power Platform admin center", status: "Was maintenance mode", does: "Puts a unified environment into a restricted state for administrative work. Microsoft's partner mapping renames Lifecycle Services maintenance mode to admin mode.", watch: "Use it for planned admin work. It is not the service-update pause that LCS projects still configure on the update calendar." },
+      { id: "lcs-projects", name: "Existing Lifecycle Services projects", home: "lcs", homeLabel: "Lifecycle Services", status: "Still open for current customers", does: "Customers who already have a cloud implementation project keep using it for those environments. New cloud implementation projects for Finance, Supply Chain Management, and Project Operations have been blocked since 16 February 2026. An exception request exists.", watch: "Commerce projects, AX 2012 upgrades, on-premises implementations, and tenant-to-tenant migrations still start in Lifecycle Services. Microsoft has not published a shutdown date for existing projects in the freeze notice." },
+      { id: "monitoring", name: "Environment monitoring and SQL Insights", home: "lcs", homeLabel: "Lifecycle Services", status: "Partly retired", does: "SQL Insights on the environment page still runs on-demand SQL queries and audited actions such as ending a blocking process. Activity queries that matched Application Insights were turned off in September 2024. Health metrics are in maintenance mode.", watch: "New diagnostics belong in Monitoring and telemetry, built on Application Insights. Do not rebuild reports on the disabled LCS activity queries." },
+      { id: "updates", name: "Service update calendar", home: "lcs", homeLabel: "Lifecycle Services", status: "LCS-managed environments", does: "For Lifecycle Services environments, set the sandbox and production update week, time zone, day, and slot. Lifecycle Services builds a six-month calendar. Updates can be paused. A self-update is still available when the slot does not fit.", watch: "Proactive quality updates use the same release schedule for unified environments and Lifecycle Services environments. A saved change does not move an update that is already inside the 14-day rollout window." },
+      { id: "asset-library", name: "Asset library and issue search", home: "lcs", homeLabel: "Lifecycle Services", status: "Stays on existing projects", does: "The asset library holds deployable packages and data packages for a Lifecycle Services project. Issue search shows known problems, workarounds, and issues Microsoft has closed.", watch: "Unified environments do not get an asset library. Store packages in Azure DevOps and import them to Dataverse. Database backups in the Power Platform admin center are not files you download." },
+      { id: "entra", name: "Power Platform administrator", home: "other", homeLabel: "Microsoft Entra", status: "Replaces LCS Project Owner", does: "The Power Platform administrator role in Microsoft Entra is the long-term admin role for unified environments. Assign it to anyone who provisions environments, manages capacity, or files support.", watch: "Project Owner in Lifecycle Services does not grant this. Partner staff need delegated admin on the customer tenant, not only a guest seat on an LCS project." },
+      { id: "m365", name: "Microsoft 365 admin center", home: "other", homeLabel: "Microsoft 365", status: "Users and subscriptions", does: "Organization users and license assignment stay here. My Account shows which subscriptions the signed-in admin actually has, which controls which ERP templates appear.", watch: "Lifecycle Services organization-user management is not replicated in the Power Platform admin center." },
+      { id: "devops", name: "Azure DevOps and hosted agents", home: "other", homeLabel: "Azure DevOps", status: "Replaces LCS builds and the asset library", does: "Software packages and build pipelines move here. Microsoft-hosted agents replace Lifecycle Services build environments. Methodology tasks can be tracked in Azure DevOps or the Dynamics Implementation portal.", watch: "Unified developer work is Visual Studio on a local machine plus a sandbox in the Power Platform admin center, not an all-in-one Azure VM from Lifecycle Services." },
+      { id: "bpm", name: "Business process catalog", home: "other", homeLabel: "Outside both portals", status: "Replaces Business process modeler", does: "Process documentation that used to live in Lifecycle Services Business process modeler is directed to the Business process catalog. Task recordings are saved as local files instead of stored in Lifecycle Services.", watch: "Do not plan a new implementation around BPM libraries inside Lifecycle Services. That tool is not coming to the Power Platform admin center." },
+      { id: "telemetry", name: "Monitoring and telemetry", home: "other", homeLabel: "Application Insights", status: "Replacement for LCS activity logs", does: "Finance and operations telemetry for sign-ins, errors, slow interactions, batch failures, and user activity. This is the supported place for the queries Microsoft removed from Lifecycle Services monitoring.", watch: "SQL blocking actions remain a Lifecycle Services SQL Insights feature on LCS-managed environments. Telemetry does not by itself replace that action list." }
+    ];
+
+    const homeIds = new Set(homes.map((item) => item.id));
+    let home = "all";
+    let selectedId = "provision";
+
+    function textCell(value) {
+      const cell = document.createElement("td");
+      cell.textContent = value;
+      return cell;
+    }
+
+    function fillStatic(bodyId, rows) {
+      const body = document.getElementById(bodyId);
+      rows.forEach((row) => {
+        const tr = document.createElement("tr");
+        row.forEach((value) => tr.appendChild(textCell(value)));
+        body.appendChild(tr);
+      });
+    }
+
+    function visibleTools() {
+      return tools.filter((tool) => home === "all" || tool.home === home);
+    }
+
+    function renderFilters() {
+      const bar = document.getElementById("filters");
+      bar.replaceChildren();
+      homes.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = item.label;
+        button.setAttribute("aria-pressed", String(item.id === home));
+        button.addEventListener("click", () => {
+          home = item.id;
+          const visible = visibleTools();
+          if (!visible.some((tool) => tool.id === selectedId) && visible[0]) {
+            selectedId = visible[0].id;
+          }
+          history.replaceState(null, "", "#" + encodeURIComponent(selectedId));
+          render();
+        });
+        bar.appendChild(button);
+      });
+    }
+
+    function renderCatalog() {
+      const visible = visibleTools();
+      const body = document.getElementById("catalog-body");
+      body.replaceChildren();
+      document.getElementById("count").textContent = visible.length + " of " + tools.length + " tools";
+
+      visible.forEach((tool) => {
+        const tr = document.createElement("tr");
+        if (tool.id === selectedId) tr.className = "is-open";
+        const nameCell = document.createElement("td");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "tool-btn";
+        button.textContent = tool.name;
+        button.setAttribute("aria-pressed", String(tool.id === selectedId));
+        button.addEventListener("click", () => {
+          selectedId = tool.id;
+          history.replaceState(null, "", "#" + encodeURIComponent(tool.id));
+          render();
+        });
+        nameCell.appendChild(button);
+        tr.append(nameCell, textCell(tool.homeLabel), textCell(tool.status));
+        body.appendChild(tr);
+      });
+    }
+
+    function renderDetail() {
+      const tool = tools.find((item) => item.id === selectedId) || visibleTools()[0];
+      const panel = document.getElementById("detail");
+      panel.replaceChildren();
+      if (!tool) return;
+
+      const kicker = document.createElement("div");
+      kicker.className = "detail-kicker";
+      const title = document.createElement("h3");
+      title.textContent = tool.name;
+      const badge = document.createElement("span");
+      badge.className = "badge";
+      badge.textContent = tool.homeLabel;
+      kicker.append(title, badge);
+
+      const meta = document.createElement("p");
+      meta.className = "meta";
+      meta.textContent = tool.status;
+
+      const does = document.createElement("p");
+      does.textContent = tool.does;
+
+      const heading = document.createElement("h4");
+      heading.textContent = "Watch-outs";
+
+      const watch = document.createElement("p");
+      watch.textContent = tool.watch;
+
+      panel.append(kicker, meta, does, heading, watch);
+    }
+
+    function render() {
+      const visible = visibleTools();
+      if (visible.length && !visible.some((tool) => tool.id === selectedId)) {
+        selectedId = visible[0].id;
+      }
+      renderFilters();
+      renderCatalog();
+      renderDetail();
+    }
+
+    function readHash() {
+      const hash = decodeURIComponent(location.hash.replace(/^#/, ""));
+      if (homeIds.has(hash)) {
+        home = hash;
+        return;
+      }
+      if (tools.some((tool) => tool.id === hash)) selectedId = hash;
+    }
+
+    fillStatic("jobs", jobs);
+    fillStatic("terms", terms);
+    readHash();
+    render();
+    window.addEventListener("hashchange", () => {
+      readHash();
+      render();
+    });
+  </script>
+</body>
+</html>

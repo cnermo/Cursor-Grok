@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>J.A.R.V.I.S. — Stark Industries</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cyan: #00e5ff;
+    --cyan-dim: rgba(0, 229, 255, 0.35);
+    --cyan-faint: rgba(0, 229, 255, 0.08);
+    --gold: #ffb300;
+    --red: #ff3d3d;
+    --bg: #01060d;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    background: radial-gradient(ellipse at center, #041a2b 0%, var(--bg) 70%);
+    color: var(--cyan);
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+  }
+
+  #bg { position: fixed; inset: 0; z-index: 0; }
+
+  .scanlines {
+    position: fixed; inset: 0; z-index: 50; pointer-events: none;
+    background: repeating-linear-gradient(to bottom, rgba(0,229,255,0.03) 0 1px, transparent 1px 3px);
+  }
+  .scanlines::after {
+    content: ""; position: absolute; left: 0; right: 0; height: 120px;
+    background: linear-gradient(to bottom, transparent, rgba(0,229,255,0.06), transparent);
+    animation: sweep 6s linear infinite;
+  }
+  @keyframes sweep { from { top: -120px; } to { top: 100%; } }
+
+  .hud {
+    position: relative; z-index: 10; height: 100vh;
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    grid-template-rows: 70px 1fr 90px;
+    gap: 18px; padding: 18px;
+  }
+
+  header {
+    grid-column: 1 / -1;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid var(--cyan-dim);
+    padding: 0 10px;
+  }
+  .brand { font-family: 'Orbitron', sans-serif; font-weight: 800; letter-spacing: 6px; font-size: 22px; text-shadow: 0 0 12px var(--cyan); }
+  .brand small { display: block; font-size: 10px; letter-spacing: 4px; opacity: .6; font-weight: 400; }
+  .clock { text-align: right; font-family: 'Orbitron'; }
+  .clock #time { font-size: 24px; letter-spacing: 3px; text-shadow: 0 0 10px var(--cyan); }
+  .clock #date { font-size: 11px; opacity: .6; letter-spacing: 2px; }
+
+  .panel {
+    position: relative;
+    border: 1px solid var(--cyan-dim);
+    background: linear-gradient(135deg, var(--cyan-faint), transparent 60%);
+    padding: 16px;
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+    backdrop-filter: blur(2px);
+  }
+  .panel h3 {
+    font-family: 'Orbitron'; font-size: 11px; letter-spacing: 3px; font-weight: 600;
+    margin-bottom: 12px; display: flex; justify-content: space-between; opacity: .9;
+  }
+  .panel h3 span { color: var(--gold); }
+
+  .side { display: flex; flex-direction: column; gap: 18px; min-height: 0; }
+  .side .panel { flex: 1; overflow: hidden; }
+
+  .stat { margin-bottom: 12px; font-size: 12px; }
+  .stat .row { display: flex; justify-content: space-between; margin-bottom: 4px; }
+  .bar { height: 5px; background: rgba(0,229,255,.12); position: relative; overflow: hidden; }
+  .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--cyan); box-shadow: 0 0 8px var(--cyan); transition: width 1s ease; }
+  .bar.warn i { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+
+  #suit { width: 100%; height: 100%; }
+
+  .center { position: relative; display: flex; align-items: center; justify-content: center; }
+
+  .reactor { position: relative; width: min(46vh, 460px); aspect-ratio: 1; cursor: pointer; }
+  .ring { position: absolute; border-radius: 50%; inset: 0; }
+  .r1 { border: 2px solid var(--cyan-dim); border-top-color: var(--cyan); border-bottom-color: var(--cyan); animation: spin 12s linear infinite; }
+  .r2 { inset: 7%; border: 1px dashed var(--cyan-dim); animation: spin 30s linear infinite reverse; }
+  .r3 { inset: 14%; border: 6px solid transparent; border-left-color: var(--cyan); border-right-color: var(--cyan); animation: spin 5s linear infinite; filter: drop-shadow(0 0 6px var(--cyan)); }
+  .r4 { inset: 22%; border: 1px solid var(--cyan-dim); }
+  .r5 {
+    inset: 26%;
+    background: repeating-conic-gradient(var(--cyan-dim) 0 2deg, transparent 2deg 10deg);
+    -webkit-mask: radial-gradient(circle, transparent 62%, #000 63%, #000 70%, transparent 71%);
+            mask: radial-gradient(circle, transparent 62%, #000 63%, #000 70%, transparent 71%);
+    animation: spin 20s linear infinite;
+  }
+  .ticks { inset: 3%; }
+  .ticks svg { width: 100%; height: 100%; animation: spin 60s linear infinite; }
+
+  .core {
+    position: absolute; inset: 36%; border-radius: 50%;
+    background: radial-gradient(circle, #fff 0%, #aaf6ff 20%, var(--cyan) 45%, rgba(0,229,255,.1) 75%, transparent 76%);
+    box-shadow: 0 0 60px var(--cyan), 0 0 120px rgba(0,229,255,.5), inset 0 0 30px #fff;
+    animation: pulse 3s ease-in-out infinite;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .core::after {
+    content: ""; position: absolute; inset: 18%; border-radius: 50%;
+    border: 3px solid rgba(255,255,255,.7);
+    clip-path: polygon(50% 0, 100% 100%, 0 100%);
+  }
+  .reactor.listening .core { animation: pulse .6s ease-in-out infinite; }
+  .reactor.speaking .core { animation: pulse .35s ease-in-out infinite; }
+
+  .label {
+    position: absolute; bottom: -54px; left: 0; right: 0; text-align: center;
+    font-family: 'Orbitron'; letter-spacing: 8px; font-size: 14px; text-shadow: 0 0 10px var(--cyan);
+  }
+  .label small { display: block; letter-spacing: 3px; font-size: 10px; opacity: .6; margin-top: 6px; font-family: 'Share Tech Mono'; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes pulse { 0%,100% { transform: scale(1); filter: brightness(1); } 50% { transform: scale(1.06); filter: brightness(1.3); } }
+
+  .corner-data { position: absolute; font-size: 11px; opacity: .7; line-height: 1.6; }
+  .corner-data.tl { top: 0; left: 0; }
+  .corner-data.tr { top: 0; right: 0; text-align: right; }
+  .corner-data.bl { bottom: 0; left: 0; }
+  .corner-data.br { bottom: 0; right: 0; text-align: right; }
+
+  #log { font-size: 12px; line-height: 1.7; height: 100%; overflow-y: auto; padding-right: 4px; }
+  #log::-webkit-scrollbar { width: 3px; }
+  #log::-webkit-scrollbar-thumb { background: var(--cyan-dim); }
+  #log .j { color: var(--cyan); }
+  #log .u { color: var(--gold); }
+  #log .s { color: rgba(0,229,255,.5); }
+  #log .e { color: var(--red); }
+
+  .threat { display: grid; grid-template-columns: repeat(8, 1fr); gap: 3px; margin-top: 6px; }
+  .threat b { height: 14px; background: rgba(0,229,255,.12); transition: background .4s; }
+  .threat b.on { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+  .threat b.hot { background: var(--red); box-shadow: 0 0 6px var(--red); }
+
+  #radar { width: 100%; aspect-ratio: 1; display: block; }
+
+  footer { grid-column: 1 / -1; display: flex; gap: 14px; align-items: center; }
+  .cmd {
+    flex: 1; display: flex; align-items: center; gap: 10px;
+    border: 1px solid var(--cyan-dim); background: var(--cyan-faint);
+    padding: 0 16px; height: 54px;
+    clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%);
+  }
+  .cmd span { color: var(--gold); font-size: 18px; }
+  .cmd input {
+    flex: 1; background: none; border: none; outline: none;
+    color: var(--cyan); font-family: inherit; font-size: 16px; letter-spacing: 1px;
+  }
+  .cmd input::placeholder { color: rgba(0,229,255,.35); }
+  button {
+    height: 54px; padding: 0 22px; font-family: 'Orbitron'; font-size: 11px; letter-spacing: 3px;
+    color: var(--cyan); background: transparent; border: 1px solid var(--cyan);
+    cursor: pointer; transition: all .2s;
+    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+  }
+  button:hover { background: var(--cyan); color: var(--bg); box-shadow: 0 0 20px var(--cyan); }
+  button.active { background: var(--red); border-color: var(--red); color: #fff; }
+
+  #boot {
+    position: fixed; inset: 0; z-index: 100; background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-size: 13px; transition: opacity 1s;
+  }
+  #boot pre { min-width: 420px; line-height: 1.8; white-space: pre-wrap; }
+  #boot .go {
+    margin-top: 30px; opacity: 0; transition: opacity .5s;
+  }
+  #boot.ready .go { opacity: 1; }
+
+  @media (max-width: 1000px) {
+    html, body { overflow: auto; }
+    .hud { grid-template-columns: 1fr; grid-template-rows: auto; height: auto; }
+    .center { min-height: 60vh; padding-bottom: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="boot">
+  <pre id="bootText"></pre>
+  <button class="go" id="engage">ENGAGE J.A.R.V.I.S.</button>
+</div>
+
+<canvas id="bg"></canvas>
+<div class="scanlines"></div>
+
+<div class="hud">
+  <header>
+    <div class="brand">J.A.R.V.I.S.<small>JUST A RATHER VERY INTELLIGENT SYSTEM</small></div>
+    <div style="font-size:11px;letter-spacing:3px;opacity:.7">STARK INDUSTRIES // MALIBU POINT 10880</div>
+    <div class="clock"><div id="time">00:00:00</div><div id="date"></div></div>
+  </header>
+
+  <div class="side">
+    <div class="panel">
+      <h3>SYSTEM DIAGNOSTICS <span>●</span></h3>
+      <div id="stats"></div>
+    </div>
+    <div class="panel" style="flex:1.2">
+      <h3>MARK LXXXV <span id="suitStatus">STANDBY</span></h3>
+      <svg id="suit" viewBox="0 0 200 260" fill="none" stroke="currentColor" stroke-width="1.2">
+        <g opacity=".9">
+          <path d="M100 10 C80 10 72 24 72 40 C72 58 84 66 100 66 C116 66 128 58 128 40 C128 24 120 10 100 10Z"/>
+          <path d="M84 38 L96 40 M104 40 L116 38" stroke-width="2.5"/>
+          <path d="M70 74 L130 74 L140 130 L124 150 L76 150 L60 130 Z"/>
+          <circle cx="100" cy="98" r="9"/>
+          <circle cx="100" cy="98" r="4" fill="currentColor" id="suitCore"/>
+          <path d="M70 76 L46 84 L36 140 L44 176"/>
+          <path d="M130 76 L154 84 L164 140 L156 176"/>
+          <circle cx="44" cy="182" r="6"/><circle cx="156" cy="182" r="6"/>
+          <path d="M78 150 L72 200 L76 250 L92 250 L96 200 L100 156"/>
+          <path d="M122 150 L128 200 L124 250 L108 250 L104 200 L100 156"/>
+        </g>
+        <g font-family="Share Tech Mono" font-size="7" fill="currentColor" stroke="none" opacity=".7">
+          <text x="140" y="30">HELM 100%</text>
+          <text x="2" y="110">L-REPULSOR</text>
+          <text x="160" y="110">R-REPULSOR</text>
+          <text x="2" y="240">BOOTS</text>
+          <text x="140" y="240">FLIGHT OK</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="center">
+    <div class="corner-data tl">LAT 34.0005° N<br>LON 118.8065° W<br>ALT 38M</div>
+    <div class="corner-data tr">UPLINK: SECURE<br>SAT: 14/14<br>ENC: AES-4096</div>
+    <div class="corner-data bl" id="hexData"></div>
+    <div class="corner-data br">PROTOCOL: HOUSE PARTY<br>STATUS: INACTIVE<br>VERONICA: ONLINE</div>
+
+    <div class="reactor" id="reactor" title="Click to talk">
+      <div class="ring ticks">
+        <svg viewBox="0 0 100 100" id="tickSvg"></svg>
+      </div>
+      <div class="ring r1"></div>
+      <div class="ring r2"></div>
+      <div class="ring r3"></div>
+      <div class="ring r4"></div>
+      <div class="ring r5"></div>
+      <div class="core"></div>
+      <div class="label">ONLINE<small id="statusLine">AT YOUR SERVICE, SIR</small></div>
+    </div>
+  </div>
+
+  <div class="side">
+    <div class="panel" style="flex:0 0 auto">
+      <h3>PERIMETER SCAN <span id="contacts">0 CONTACTS</span></h3>
+      <canvas id="radar" width="260" height="260"></canvas>
+      <div style="font-size:11px;margin-top:10px">THREAT LEVEL</div>
+      <div class="threat" id="threat"></div>
+    </div>
+    <div class="panel">
+      <h3>COMMS LOG <span>LIVE</span></h3>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="cmd">
+      <span>&gt;</span>
+      <input id="input" placeholder="Speak to JARVIS... try &quot;status&quot;, &quot;suit up&quot;, &quot;weather&quot;, &quot;joke&quot;, &quot;scan&quot;" autocomplete="off">
+    </div>
+    <button id="mic">VOICE</button>
+    <button id="send">TRANSMIT</button>
+  </footer>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+
+/* ---------- Background: particles + hex grid ---------- */
+const bg = $('#bg'), ctx = bg.getContext('2d');
+let W, H, parts = [];
+function resize() {
+  W = bg.width = innerWidth; H = bg.height = innerHeight;
+  parts = Array.from({ length: Math.floor(W * H / 14000) }, () => ({
+    x: Math.random() * W, y: Math.random() * H,
+    vx: (Math.random() - .5) * .3, vy: (Math.random() - .5) * .3
+  }));
+}
+addEventListener('resize', resize); resize();
+(function drawBg() {
+  ctx.clearRect(0, 0, W, H);
+  for (const p of parts) {
+    p.x = (p.x + p.vx + W) % W; p.y = (p.y + p.vy + H) % H;
+    ctx.fillStyle = 'rgba(0,229,255,.6)';
+    ctx.fillRect(p.x, p.y, 1.5, 1.5);
+  }
+  for (let i = 0; i < parts.length; i++) for (let j = i + 1; j < parts.length; j++) {
+    const a = parts[i], b = parts[j], d = Math.hypot(a.x - b.x, a.y - b.y);
+    if (d < 110) {
+      ctx.strokeStyle = `rgba(0,229,255,${(1 - d / 110) * .15})`;
+      ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+    }
+  }
+  requestAnimationFrame(drawBg);
+})();
+
+/* ---------- Reactor tick marks ---------- */
+const tickSvg = $('#tickSvg');
+for (let i = 0; i < 120; i++) {
+  const a = i * 3 * Math.PI / 180, long = i % 10 === 0;
+  const r1 = 50, r2 = long ? 45 : 47.5;
+  const l = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  l.setAttribute('x1', 50 + Math.cos(a) * r1); l.setAttribute('y1', 50 + Math.sin(a) * r1);
+  l.setAttribute('x2', 50 + Math.cos(a) * r2); l.setAttribute('y2', 50 + Math.sin(a) * r2);
+  l.setAttribute('stroke', long ? '#00e5ff' : 'rgba(0,229,255,.4)');
+  l.setAttribute('stroke-width', long ? .6 : .3);
+  tickSvg.appendChild(l);
+}
+
+/* ---------- Clock ---------- */
+function tick() {
+  const d = new Date();
+  $('#time').textContent = d.toLocaleTimeString('en-US', { hour12: false });
+  $('#date').textContent = d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase();
+}
+setInterval(tick, 1000); tick();
+
+/* ---------- Diagnostics ---------- */
+const stats = [
+  { name: 'ARC REACTOR OUTPUT', v: 97, unit: '%' },
+  { name: 'CPU CLUSTER', v: 42, unit: '%' },
+  { name: 'NEURAL NET LOAD', v: 63, unit: '%' },
+  { name: 'SHIELD INTEGRITY', v: 88, unit: '%' },
+  { name: 'PALLADIUM TOXICITY', v: 12, unit: '%', warn: true },
+  { name: 'NETWORK THROUGHPUT', v: 71, unit: ' TB/s' },
+];
+$('#stats').innerHTML = stats.map((s, i) => `
+  <div class="stat"><div class="row"><span>${s.name}</span><span id="sv${i}">${s.v}${s.unit}</span></div>
+  <div class="bar ${s.warn ? 'warn' : ''}"><i id="sb${i}" style="width:${s.v}%"></i></div></div>`).join('');
+setInterval(() => stats.forEach((s, i) => {
+  s.v = Math.max(3, Math.min(100, s.v + Math.round((Math.random() - .5) * 8)));
+  if (i === 0) s.v = Math.max(90, s.v);
+  $('#sv' + i).textContent = s.v + s.unit;
+  $('#sb' + i).style.width = s.v + '%';
+}), 1500);
+
+/* ---------- Hex stream ---------- */
+setInterval(() => {
+  $('#hexData').innerHTML = Array.from({ length: 3 }, () =>
+    Array.from({ length: 4 }, () => Math.floor(Math.random() * 65535).toString(16).toUpperCase().padStart(4, '0')).join(' ')
+  ).join('<br>');
+}, 200);
+
+/* ---------- Radar ---------- */
+const rc = $('#radar'), rx = rc.getContext('2d');
+let sweep = 0, blips = [];
+function spawnBlips(n) {
+  blips = Array.from({ length: n }, () => ({ a: Math.random() * Math.PI * 2, r: 20 + Math.random() * 100, life: 0, hostile: Math.random() < .25 }));
+  $('#contacts').textContent = n + ' CONTACTS';
+  setThreat(blips.filter(b => b.hostile).length * 2 + 1);
+}
+spawnBlips(4);
+(function drawRadar() {
+  const c = 130;
+  rx.clearRect(0, 0, 260, 260);
+  rx.strokeStyle = 'rgba(0,229,255,.3)';
+  for (let r = 30; r <= 120; r += 30) { rx.beginPath(); rx.arc(c, c, r, 0, Math.PI * 2); rx.stroke(); }
+  rx.beginPath(); rx.moveTo(c - 125, c); rx.lineTo(c + 125, c); rx.moveTo(c, c - 125); rx.lineTo(c, c + 125); rx.stroke();
+  const g = rx.createConicGradient ? rx.createConicGradient(sweep - Math.PI / 3, c, c) : null;
+  if (g) {
+    g.addColorStop(0, 'rgba(0,229,255,0)'); g.addColorStop(1 / 6, 'rgba(0,229,255,.35)'); g.addColorStop(1 / 6 + .001, 'rgba(0,229,255,0)');
+    rx.fillStyle = g; rx.beginPath(); rx.arc(c, c, 120, 0, Math.PI * 2); rx.fill();
+  }
+  rx.strokeStyle = '#00e5ff'; rx.beginPath(); rx.moveTo(c, c); rx.lineTo(c + Math.cos(sweep) * 120, c + Math.sin(sweep) * 120); rx.stroke();
+  for (const b of blips) {
+    const diff = ((sweep - b.a) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+    if (diff < .05) b.life = 1;
+    b.life *= .985;
+    rx.fillStyle = b.hostile ? `rgba(255,61,61,${b.life})` : `rgba(0,229,255,${b.life})`;
+    rx.beginPath(); rx.arc(c + Math.cos(b.a) * b.r, c + Math.sin(b.a) * b.r, 3.5, 0, Math.PI * 2); rx.fill();
+  }
+  sweep = (sweep + .03) % (Math.PI * 2);
+  requestAnimationFrame(drawRadar);
+})();
+
+function setThreat(level) {
+  $('#threat').innerHTML = Array.from({ length: 8 }, (_, i) =>
+    `<b class="${i < level ? (level > 5 ? 'hot' : 'on') : ''}"></b>`).join('');
+}
+
+/* ---------- Comms log + voice ---------- */
+const log = $('#log');
+function addLog(text, cls = 'j') {
+  const who = { j: 'JARVIS', u: 'YOU', s: 'SYS', e: 'ALERT' }[cls];
+  const line = document.createElement('div');
+  line.className = cls;
+  line.textContent = `[${who}] `;
+  log.appendChild(line);
+  let i = 0;
+  const t = setInterval(() => {
+    line.textContent += text[i++] || '';
+    log.scrollTop = log.scrollHeight;
+    if (i >= text.length) clearInterval(t);
+  }, 14);
+}
+
+let voice = null;
+function pickVoice() {
+  const vs = speechSynthesis.getVoices();
+  voice = vs.find(v => /en-GB/.test(v.lang) && /male|daniel|george|ryan/i.test(v.name))
+       || vs.find(v => /en-GB/.test(v.lang)) || vs.find(v => /^en/.test(v.lang)) || null;
+}
+if ('speechSynthesis' in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+
+const reactor = $('#reactor');
+function say(text) {
+  addLog(text, 'j');
+  $('#statusLine').textContent = 'SPEAKING';
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  if (voice) u.voice = voice;
+  u.rate = 1.02; u.pitch = .9;
+  u.onstart = () => reactor.classList.add('speaking');
+  u.onend = () => { reactor.classList.remove('speaking'); $('#statusLine').textContent = 'AT YOUR SERVICE, SIR'; };
+  speechSynthesis.speak(u);
+}
+
+const jokes = [
+  "I would tell you a joke about the Mark 42, sir, but it tends to fall apart.",
+  "Shall I add 'humility' to your list of things to work on? It has been pending since 2008.",
+  "I've calculated a 97.6 percent chance you'll ignore my advice. Proceed as usual, sir.",
+  "Sir, I believe the phrase you are looking for is: I am Iron Man. You have used it several times today.",
+];
+
+const commands = [
+  [/\b(hello|hi|hey|wake up|good (morning|afternoon|evening))\b/, () => {
+    const h = new Date().getHours();
+    return `Good ${h < 12 ? 'morning' : h < 18 ? 'afternoon' : 'evening'}, sir. All systems are operational.`;
+  }],
+  [/\bstatus|diagnos/, () => `Arc reactor at ${stats[0].v} percent. Shield integrity ${stats[3].v} percent. Palladium levels are ${stats[4].v > 20 ? 'concerning' : 'within tolerance'}.`],
+  [/\bsuit|armor|armour\b/, () => {
+    $('#suitStatus').textContent = 'DEPLOYING';
+    document.querySelector('#suit').style.color = '#ffb300';
+    setTimeout(() => { $('#suitStatus').textContent = 'ENGAGED'; document.querySelector('#suit').style.color = ''; }, 3000);
+    return "Deploying the Mark 85, sir. Nanites are assembling. Try not to scratch the paint this time.";
+  }],
+  [/\bscan|perimeter|radar\b/, () => {
+    spawnBlips(3 + Math.floor(Math.random() * 7));
+    const hostile = blips.filter(b => b.hostile).length;
+    return `Perimeter scan complete. ${blips.length} contacts detected, ${hostile ? hostile + ' flagged as potentially hostile' : 'none hostile'}.`;
+  }],
+  [/\btime\b/, () => `It is ${new Date().toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}, sir.`],
+  [/\b(date|day|today)\b/, () => `Today is ${new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}.`],
+  [/\bweather\b/, () => "Clear skies over Malibu, 24 degrees Celsius, winds light from the west. Perfect flying conditions, sir."],
+  [/\bjoke|funny\b/, () => jokes[Math.floor(Math.random() * jokes.length)]],
+  [/\bhouse party\b/, () => { setThreat(8); return "Initiating House Party Protocol. All suits are en route, sir."; }],
+  [/\b(clean slip|stand down|calm)\b/, () => { setThreat(1); spawnBlips(0); return "Standing down. All units returning to base."; }],
+  [/\bwho are you|your name\b/, () => "I am J.A.R.V.I.S., Just A Rather Very Intelligent System. Created by Mister Stark."],
+  [/\bthank/, () => "Always a pleasure, sir."],
+  [/\bhelp|what can you do\b/, () => "I can report status, suit up, run a perimeter scan, check the time, date and weather, tell jokes, or initiate the House Party Protocol."],
+];
+
+function handle(text) {
+  text = text.trim();
+  if (!text) return;
+  addLog(text, 'u');
+  const lower = text.toLowerCase();
+  const match = commands.find(([re]) => re.test(lower));
+  setTimeout(() => say(match ? match[1]() : "I'm afraid that is outside my current parameters, sir. Say 'help' for available commands."), 350);
+}
+
+const input = $('#input');
+input.addEventListener('keydown', e => { if (e.key === 'Enter') { handle(input.value); input.value = ''; } });
+$('#send').onclick = () => { handle(input.value); input.value = ''; input.focus(); };
+
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null;
+function listen() {
+  if (!SR) { addLog('Voice recognition is not supported in this browser. Try Chrome or Edge.', 'e'); return; }
+  if (rec) { rec.stop(); return; }
+  rec = new SR(); rec.lang = 'en-US'; rec.interimResults = false;
+  rec.onstart = () => { reactor.classList.add('listening'); $('#mic').classList.add('active'); $('#statusLine').textContent = 'LISTENING...'; };
+  rec.onresult = e => handle(e.results[0][0].transcript);
+  rec.onerror = e => addLog('Voice error: ' + e.error, 'e');
+  rec.onend = () => { reactor.classList.remove('listening'); $('#mic').classList.remove('active'); $('#statusLine').textContent = 'AT YOUR SERVICE, SIR'; rec = null; };
+  rec.start();
+}
+$('#mic').onclick = listen;
+reactor.onclick = listen;
+
+/* ---------- Boot sequence ---------- */
+const bootLines = [
+  'STARK INDUSTRIES BIOS v12.4.7',
+  'INITIALIZING ARC REACTOR ............ OK',
+  'LOADING NEURAL CORE ................. OK',
+  'MOUNTING SUIT TELEMETRY ............. OK',
+  'ESTABLISHING SATELLITE UPLINK ....... OK',
+  'CALIBRATING HOLOGRAPHIC DISPLAY ..... OK',
+  'VOICE SYNTHESIS MODULE .............. OK',
+  '',
+  'J.A.R.V.I.S. READY.',
+];
+const bootText = $('#bootText');
+let bi = 0;
+const bootTimer = setInterval(() => {
+  bootText.textContent += bootLines[bi++] + '\n';
+  if (bi >= bootLines.length) { clearInterval(bootTimer); $('#boot').classList.add('ready'); }
+}, 220);
+
+$('#engage').onclick = () => {
+  const boot = $('#boot');
+  boot.style.opacity = 0;
+  setTimeout(() => boot.remove(), 1000);
+  addLog('Secure connection established.', 's');
+  setTimeout(() => handle('Wake up, JARVIS'), 800);
+  input.focus();
+};
+</script>
+</body>
+</html>
