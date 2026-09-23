@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finance and Operations 10.0.50</title>
+  <meta name="description" content="What Microsoft has published for Dynamics 365 Finance and Operations 10.0.50 as of September 23, 2026. The feature catalog is not published yet.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f3f0;
+      --surface: #fffcf8;
+      --text: #1c1b19;
+      --muted: #5c5852;
+      --faint: #7a756d;
+      --line: #e2ddd4;
+      --warn-bg: #f8f1e4;
+      --warn-line: #e4d3ae;
+      --row: #f7f5f1;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 "Segoe UI", system-ui, sans-serif; }
+    .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 64px; }
+    h1 { margin: 0 0 8px; font-size: 1.75rem; line-height: 1.2; font-weight: 650; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 8px; font-size: 1.15rem; font-weight: 650; }
+    .lede { margin: 0; max-width: 78ch; color: var(--muted); }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 24px 0; }
+    .stat { background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; }
+    .stat strong { display: block; font-size: 1.35rem; font-weight: 650; }
+    .stat span { color: var(--muted); font-size: 0.875rem; }
+    .callout { background: var(--warn-bg); border: 1px solid var(--warn-line); padding: 14px 16px; }
+    .callout p { margin: 0; }
+    section { margin-top: 28px; }
+    .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .card { background: var(--surface); border: 1px solid var(--line); padding: 16px; }
+    .card h2 { font-size: 1.05rem; }
+    .card p { margin: 8px 0 0; }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--line); background: var(--surface); }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); font-size: 0.9375rem; }
+    .table-scroll table { min-width: 680px; }
+    th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+    th { font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--faint); }
+    tbody tr:nth-child(even) { background: var(--row); }
+    caption { caption-side: bottom; text-align: left; color: var(--faint); font-size: 0.8125rem; padding: 8px 0; }
+    footer, .note { color: var(--faint); font-size: 0.875rem; }
+    footer { margin-top: 32px; max-width: 85ch; }
+    @media (max-width: 800px) {
+      .stats, .split { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>Finance and Operations 10.0.50</h1>
+      <p class="lede">CY27Q1 service update, platform update 74. Preview has not started, and Microsoft has not published the Finance, Supply Chain, or platform what's-new articles for this version.</p>
+    </header>
+
+    <section class="stats" aria-label="Release dates">
+      <div class="stat"><strong>Oct 23</strong><span>Preview opens, 2026</span></div>
+      <div class="stat"><strong>Dec 22</strong><span>Self-update general availability</span></div>
+      <div class="stat"><strong>Jan 31</strong><span>First production auto-update, 2027</span></div>
+      <div class="stat"><strong>Aug 20, 2027</strong><span>End of service</span></div>
+    </section>
+
+    <div class="callout">
+      <p><strong>No feature list yet.</strong> The Finance and Supply Chain what's-new indexes still stop at 10.0.49, build 10.0.2790. The 10.0.50 articles return not found. The application build number is not published. Release plans stopped in September 2026; later capabilities are supposed to appear on the AI at Work roadmap, not in a 2026 wave 2 plan.</p>
+    </div>
+
+    <section>
+      <h2>Published schedule</h2>
+      <p class="lede">10.0.50 has no asterisk, so Microsoft does not mark it as a major release. 10.0.49 and 10.0.51 are the major releases on either side. A sandbox auto-update runs seven days before the production date.</p>
+      <div class="table-scroll">
+        <table>
+          <caption>Source: Microsoft Learn, Service update availability. Dates are subject to change. Checked September 23, 2026.</caption>
+          <thead>
+            <tr><th>Milestone</th><th>Date</th><th>What you can do</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Preview</td><td>October 23, 2026</td><td>Deploy only to a development or test environment. Preview cannot go to production.</td></tr>
+            <tr><td>Latest preview update</td><td>November 17, 2026</td><td>One scheduled preview update is included with the release.</td></tr>
+            <tr><td>Self-update general availability</td><td>December 22, 2026</td><td>Apply the package yourself from Lifecycle Services, including production.</td></tr>
+            <tr><td>First production auto-update</td><td>January 31, 2027</td><td>Microsoft applies it if the environment is still on an older supported update.</td></tr>
+            <tr><td>Second production auto-update</td><td>February 28, 2027</td><td>The later of the two windows, four weeks after the first.</td></tr>
+            <tr><td>End of service</td><td>August 20, 2027</td><td>No new cumulative updates for 10.0.50 after this date.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="split">
+      <article class="card">
+        <h2>Tied to 10.0.50</h2>
+        <p>Platform update 74. Batch job occurrence telemetry is documented for PU74 / 10.0.50 at platform build 7.0.8219.0 and later.</p>
+        <p>That telemetry was backported. It is already available on 10.0.49 at platform build 7.0.8199.5 and later, and on 10.0.48 at 7.0.7996.85 and later, if flight BatchJobOccurrenceTelemetryFlight is on.</p>
+      </article>
+      <article class="card">
+        <h2>Not this release</h2>
+        <p>Visual Studio 2022 support for X++ ends at platform update 75, which is 10.0.51, not 10.0.50. The 10.0.49 platform article states that only Visual Studio 2026 is supported from PU75.</p>
+        <p>The client and server method keywords are warnings as of 10.0.48. The X++ language reference still says they are ignored and do not fail compilation.</p>
+      </article>
+    </section>
+
+    <section>
+      <h2>October 2026 dates that are not labeled 10.0.50</h2>
+      <p class="lede">These sit on the 2026 wave 1 plan with a general-availability month of October 2026. Microsoft has not assigned them to a service update. 10.0.49 production auto-update also starts in October, and 10.0.50 preview starts October 23.</p>
+      <div class="table-scroll">
+        <table>
+          <caption>Source: Dynamics 365 2026 release wave 1 planned features for Finance and Supply Chain Management. Supplier Engagement is listed because its general availability is March 2027, after 10.0.50 self-update and before 10.0.51 production auto-update.</caption>
+          <thead>
+            <tr><th>Plan item</th><th>Product</th><th>Public preview</th><th>General availability</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Brazil 2027 tax reform</td><td>Finance, Globalization Studio</td><td>September 2026</td><td>October 2026</td></tr>
+            <tr><td>Forecast accuracy explanations</td><td>Supply Chain, Copilot</td><td>July 31, 2026</td><td>October 2026</td></tr>
+            <tr><td>Dynamic item placement</td><td>Supply Chain, Warehouse</td><td>June 5, 2026</td><td>October 2026</td></tr>
+            <tr><td>Supplier Engagement</td><td>Supply Chain, Procurement</td><td>July 27, 2026</td><td>March 2027</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      Sources checked September 23, 2026: service update availability; Finance and Supply Chain what's-new home pages; platform updates for 10.0.49; available telemetry; 2026 wave 1 Finance and Supply Chain plans. Bug fixes for 10.0.50 will be in the Lifecycle Services KB after the build is published.
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI tools for Dynamics 365 Finance and Operations</title>
+  <meta name="description" content="September 2026 catalog of AI tools for Dynamics 365 Finance and Operations: in-app Copilot, Microsoft 365, build-your-own agents, and partner platforms.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f3f0;
+      --surface: #fffcf8;
+      --text: #1c1b19;
+      --muted: #5c5852;
+      --faint: #7a756d;
+      --line: #e2ddd4;
+      --accent: #1f4d3a;
+      --accent-ink: #f7f6f2;
+      --warn-bg: #f8f1e4;
+      --warn-line: #e4d3ae;
+      --row: #f7f5f1;
+      --focus: #1f4d3a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.5 "Segoe UI", system-ui, sans-serif;
+    }
+
+    a { color: var(--accent); }
+
+    .wrap {
+      width: min(1120px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 64px;
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 1.75rem;
+      line-height: 1.2;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .lede {
+      margin: 0;
+      max-width: 68ch;
+      color: var(--muted);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin: 24px 0;
+    }
+
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 14px 16px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.5rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.875rem;
+    }
+
+    .callout {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-line);
+      padding: 14px 16px;
+      margin-bottom: 28px;
+    }
+
+    .callout h2,
+    section h2 {
+      margin: 0 0 6px;
+      font-size: 1.15rem;
+      font-weight: 650;
+    }
+
+    .callout p,
+    .hint {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    section { margin-top: 28px; }
+
+    .section-label {
+      margin: 0 0 12px;
+      color: var(--faint);
+      font-size: 0.875rem;
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      font-size: 0.9375rem;
+    }
+
+    .table-scroll table {
+      border: 0;
+      min-width: 720px;
+    }
+
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--faint);
+      font-weight: 650;
+      background: var(--surface);
+    }
+
+    tbody tr:nth-child(even) { background: var(--row); }
+
+    caption {
+      caption-side: bottom;
+      text-align: left;
+      color: var(--faint);
+      font-size: 0.8125rem;
+      padding-top: 8px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0 0 8px;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 6px 12px;
+    }
+
+    button[aria-pressed="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: var(--accent-ink);
+    }
+
+    button:focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .catalog {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .catalog-table-wrap {
+      overflow: auto;
+      max-height: 640px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+    }
+
+    .catalog-table-wrap table { border: 0; }
+
+    .catalog-table-wrap th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .tool-btn {
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+
+    tr.is-open { outline: 1px solid var(--accent); outline-offset: -1px; }
+
+    .detail {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 16px;
+      position: sticky;
+      top: 16px;
+    }
+
+    .detail-kicker {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .detail h3 {
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 2px 8px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .meta {
+      margin: 0 0 10px;
+      color: var(--faint);
+      font-size: 0.875rem;
+    }
+
+    .detail h4 {
+      margin: 16px 0 4px;
+      font-size: 0.95rem;
+    }
+
+    .detail p { margin: 0; }
+
+    .count {
+      margin: 0 0 12px;
+      color: var(--faint);
+      font-size: 0.875rem;
+    }
+
+    footer {
+      margin-top: 32px;
+      color: var(--faint);
+      font-size: 0.8125rem;
+      max-width: 80ch;
+    }
+
+    @media (max-width: 800px) {
+      .stats,
+      .catalog { grid-template-columns: 1fr; }
+      .detail { position: static; }
+      .wrap { width: min(1120px, calc(100% - 20px)); }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>AI tools for Dynamics 365 Finance and Operations</h1>
+      <p class="lede">What is actually available to run finance and operations work in September 2026, grouped by where it lives and which process it touches.</p>
+    </header>
+
+    <section class="stats" aria-label="Tool counts by layer">
+      <div class="stat"><strong>8</strong><span>In the ERP</span></div>
+      <div class="stat"><strong>1</strong><span>Microsoft 365 suite</span></div>
+      <div class="stat"><strong>2</strong><span>Build-your-own paths</span></div>
+      <div class="stat"><strong>6</strong><span>Partner platforms</span></div>
+    </section>
+
+    <aside class="callout">
+      <h2>Most autonomous agents are still preview</h2>
+      <p>Account Reconciliation, Procurement, Immersive Home, Agent management, and the Finance Agent in Microsoft 365 are preview. The Account Reconciliation Agent currently needs Microsoft to turn it on. Treat them as exception handlers with a person accepting the action, not as an unattended close.</p>
+    </aside>
+
+    <section id="start">
+      <h2>Where to start</h2>
+      <p class="section-label">Pick by the pain, not by the newest agent name.</p>
+      <div class="table-scroll">
+      <table>
+        <caption>Three starting paths for a Finance and Operations AI rollout.</caption>
+        <thead>
+          <tr><th>Path</th><th>Use</th><th>Constraint</th></tr>
+        </thead>
+        <tbody id="starts"></tbody>
+      </table>
+      </div>
+    </section>
+
+    <section id="catalog">
+      <h2>Catalog</h2>
+      <div class="filters" role="toolbar" aria-label="Filter by process" id="filters"></div>
+      <p class="count" id="count"></p>
+      <div class="catalog">
+        <div class="catalog-table-wrap">
+          <table>
+            <caption>Select a tool name to read what it does and what it does not cover.</caption>
+            <thead>
+              <tr><th>Tool</th><th>Lives in</th><th>Status</th></tr>
+            </thead>
+            <tbody id="catalog-body"></tbody>
+          </table>
+        </div>
+        <article class="detail" id="detail" aria-live="polite"></article>
+      </div>
+    </section>
+
+    <section id="layers">
+      <h2>How the four layers divide the work</h2>
+      <div class="table-scroll">
+      <table>
+        <caption>What each layer covers, and the job it still leaves to something else.</caption>
+        <thead>
+          <tr><th>Layer</th><th>Owns</th><th>Does not own yet</th></tr>
+        </thead>
+        <tbody id="layers-body"></tbody>
+      </table>
+      </div>
+    </section>
+
+    <footer>
+      Sources: Microsoft Learn Copilot and agent catalogs for finance and operations, Finance, and Supply Chain Management; 2026 release wave 1 plans for Invoice Capture, Demand planning, and the Procurement Agent; Marketplace and vendor pages for BlackLine, HighRadius, Truvio, Dooap, Rillion, and Stampli. Checked 21 September 2026. Preview dates and activation rules change with each Finance quality update.
+    </footer>
+  </main>
+
+  <script>
+    const areas = [
+      { id: "all", label: "All" },
+      { id: "close", label: "Close" },
+      { id: "payables", label: "Payables" },
+      { id: "receivables", label: "Receivables" },
+      { id: "supply", label: "Supply chain" },
+      { id: "platform", label: "Platform" }
+    ];
+
+    const starts = [
+      ["Turn on what you already license", "Generative help, chat with finance and operations data, customer and collections summaries, workflow summaries, and Invoice Capture.", "No new vendor, no agent activation. Best first month."],
+      ["Attack the close", "Request Microsoft activation for the Account Reconciliation Agent if subledger-to-ledger breaks the close. Use Finance Agent in Excel for workbook reconciliations that never live in the ledger.", "Both are preview. Keep a person accepting journals."],
+      ["Automate volume", "Payables: Truvio, Dooap, Rillion, or Stampli. Receivables and cash application: HighRadius or BlackLine. Procurement follow-up: Procurement Agent once Agent management is on.", "Microsoft's in-app agents do not yet replace a touchless invoice-to-pay or cash-application suite."]
+    ];
+
+    const layers = [
+      ["In the ERP", "Summaries, help, invoice capture, subledger reconciliation, procurement email, demand explanations, warehouse workload", "Touchless invoice-to-pay and high-volume cash application"],
+      ["Microsoft 365", "Excel reconciliations, variance narrative, AR and AP questions, light ERP actions via MCP", "The legal ledger. Excel agents reconcile workbook tables."],
+      ["Build", "Your own processes: X++ tools, client actions, Copilot Studio agents on the dynamic ERP MCP server", "A supported agent after the static 13-tool MCP server retires on 1 October 2026"],
+      ["Partner", "AP suites inside or beside Finance, and AR cash application and collections with write-back", "Replacing Finance as the system of record"]
+    ];
+
+    const tools = [
+      { id: "sidecar", name: "Generative help and chat with data", maker: "Microsoft", layer: "In the ERP", areas: ["platform"], status: "Generally available", does: "Sidecar in every finance and operations app. Users ask how a feature works, or ask questions answered from the structured data their security role can already see.", watch: "Answers stay inside the user's existing permissions. This is guidance and Q&A, not autonomous posting." },
+      { id: "summaries", name: "Customer, collections, and workflow summaries", maker: "Microsoft", layer: "In the ERP", areas: ["receivables", "close", "platform"], status: "Generally available", does: "Azure OpenAI summaries on the customer page, in the Collections coordinator workspace (including a draft reminder letter), and on Workflow history for every document type.", watch: "Summaries explain what is already in the record. They do not chase cash or approve workflows on their own." },
+      { id: "invoice-capture", name: "Invoice Capture", maker: "Microsoft", layer: "In the ERP", areas: ["payables"], status: "GA, with AI previews", does: "Native vendor-invoice OCR into Dynamics 365 Finance. May 2026 added preview AI suggestions that derive coding from Dataverse instead of fixed rules. A September 2026 preview (10.0.49) adds header-to-PO derivation that learns from corrections, a side-by-side invoice and purchase order view, and charge recognition.", watch: "Capture and matching, not a full payables suite. Approvals still use the Finance workflow engine. The Business Central Payables Agent is a different product." },
+      { id: "acct-recon", name: "Account Reconciliation Agent", maker: "Microsoft", layer: "In the ERP", areas: ["close"], status: "Production-ready preview", does: "Watches subledger-to-general-ledger differences, raises exceptions in the Account reconciliation workspace, and recommends an action such as creating a journal. The user accepts or picks another action. Covers types such as voucher amount mismatch and pending accounting not yet in the general ledger.", watch: "Microsoft must activate it until more configuration and credit controls ship. Needs Finance 10.0.46 or later, Immersive Home, Agent management, and Copilot packages 1.0.3048.2 / 1.0.3049.1 or later." },
+      { id: "agents-home", name: "Immersive Home and Agent management", maker: "Microsoft", layer: "In the ERP", areas: ["platform"], status: "Production-ready preview", does: "A workspace for working alongside agents, plus the Agents page where templates are discovered, configured, and turned on. Required before the Account Reconciliation Agent and the Procurement Agent.", watch: "Preview. Copilot Studio billing and data-loss-prevention policies can block agent publish." },
+      { id: "procurement", name: "Procurement Agent", maker: "Microsoft", layer: "In the ERP", areas: ["supply"], status: "Production-ready preview", does: "Supplier communications: drafts purchase-order follow-ups (gpt-4o, with tone and urgency settings), reads vendor email for requested PO changes, and can run downstream impact analysis on inventory, production, and deliveries. Impact analysis entered public preview on 24 April 2026.", watch: "Human review is the default. Automatic send is a separate feature and should stay off in sandboxes. Deployed from Copilot Hub." },
+      { id: "demand", name: "Demand planning Copilot", maker: "Microsoft", layer: "In the ERP", areas: ["supply"], status: "GA, with 2026 additions", does: "On a demand worksheet, predefined questions explain shifts, trends, anomalies, and forecast accuracy in natural language plus charts. Generative insights for planning reached general availability in August 2026. Forecast-accuracy explanations are in public preview until general availability in October 2026.", watch: "Requires the GA Demand planning app. Questions are chosen from a menu on a selected period, not an open-ended agent that changes the forecast." },
+      { id: "warehouse", name: "Warehouse workload insights", maker: "Microsoft", layer: "In the ERP", areas: ["supply"], status: "Generally available", does: "Copilot in the Warehouse Management mobile app summarizes open work headers, pick lines, receiving lines, and available labor so supervisors see what is backing up.", watch: "Insight on current work. It does not resequence waves or assign labor by itself." },
+      { id: "finance-agent", name: "Finance Agent in Microsoft 365 Copilot", maker: "Microsoft", layer: "Microsoft 365", areas: ["close", "payables", "receivables"], status: "Frontier preview", does: "Lives in Copilot chat, Excel, and Outlook. Researches public and private companies, answers accounts-payable and accounts-receivable questions, and can take some ERP actions through the Dynamics 365 ERP MCP server. Excel reconciliation matches two tables with suggested rules, assistively or on a schedule. Variance analysis explains actuals versus forecast.", watch: "Frontier preview, currently English (United States), and separate from the in-app Account Reconciliation Agent. Excel reconciliation works on workbook tables, not directly on the general ledger." },
+      { id: "mcp", name: "Dynamics 365 ERP MCP server", maker: "Microsoft", layer: "Build", areas: ["platform"], status: "Production-ready preview", does: "Lets a Copilot Studio agent call finance and operations the way a user can: data tools (OData) for create/read/update/delete, form tools for UI-equivalent steps, and API tools for custom X++ logic. Prefer data tools for CRUD. Security follows the agent's role and environment.", watch: "The older static server (13 fixed tools) retires on 1 October 2026. New agents should use the dynamic server." },
+      { id: "plugins", name: "X++ AI tools and client actions", maker: "Microsoft", layer: "Build", areas: ["platform"], status: "Client actions GA April 2026", does: "Two extension paths. Headless X++ classes, exposed as Dataverse custom APIs, become tools any Copilot Studio agent can call. Client actions run in-app business logic from the sidecar when the user is on a form. Generative orchestration picks the tool from the prompt.", watch: "You own the X++ contract, the Dataverse API, and the agent's instructions. A bad tool description is how an agent calls the wrong operation." },
+      { id: "truvio", name: "Truvio AP Automation (ExFlow)", maker: "Truvio", layer: "Partner", areas: ["payables"], status: "Partner product", does: "Accounts payable inside Dynamics 365 Finance: capture, e-invoicing, coding, matching, and vendor-statement reconciliation without a second application. A June 2026 Avanade benchmark, as published by Truvio, scored it 4.65/5 and the highest enterprise fit among the Dynamics 365 AP tools in that comparison.", watch: "That score is from the vendor's write-up of the benchmark. Confirm scope against your entities, PO mix, and countries." },
+      { id: "dooap", name: "Dooap", maker: "Dooap", layer: "Partner", areas: ["payables"], status: "Partner product", does: "Microsoft-certified AP automation built for Dynamics 365 Finance. Dooap Studio configures automation without code so coding and matching rules can follow the way the AP team already works.", watch: "A separate product surface, even though it is built for Finance. Compare it with Truvio if staying inside the ERP client matters." },
+      { id: "rillion", name: "Rillion", maker: "Rillion", layer: "Partner", areas: ["payables"], status: "Partner product", does: "Invoice capture, account coding, approval, three-way PO matching, and payment reconciliation aimed at Dynamics 365 Finance.", watch: "Strong when payments are part of the same automation scope as invoice coding. Validate the posting path back into Finance, including asynchronous batch posting." },
+      { id: "stampli", name: "Stampli", maker: "Stampli", layer: "Partner", areas: ["payables"], status: "Partner product", does: "Syncs vendors, accounts, and financial dimensions from Finance and Operations, validates dimension combinations before posting, and uses AI for capture, coding, and line-level PO match. Finance and Operations stays the system of record. Stampli says a person reviews before post.", watch: "Integration is through data entities and must respect the delay between submit and batch post. Stampli's automation-rate figures are the vendor's own." },
+      { id: "highradius", name: "HighRadius receivables", maker: "HighRadius", layer: "Partner", areas: ["receivables"], status: "Partner product", does: "Order-to-cash suite for Dynamics 365 Finance: e-invoicing, collections, cash application, and credit. For Finance and Operations 10.0.28 and later, prebuilt SFTP syncs customer master, open AR, invoice PDFs, and payment history in, and writes deduction resolutions back.", watch: "File-based, not the in-app Copilot. Collections coordinator summaries in Finance are a lighter, already-licensed alternative for teams that only need a draft reminder." },
+      { id: "blackline", name: "BlackLine Accounts Receivable", maker: "BlackLine", layer: "Partner", areas: ["receivables", "close"], status: "Partner product", does: "Azure-hosted AR automation with a two-way Dynamics 365 Finance and Operations connector. Pulls customer invoices and open items, applies cash with machine learning, and posts clearings back. BlackLine states customers have removed a large share of manual cash application.", watch: "This connector is receivables automation. Subledger-to-general-ledger exceptions are a different job, and that is what Microsoft's Account Reconciliation Agent is previewing inside Finance." }
+    ];
+
+    const areaIds = new Set(areas.map((area) => area.id));
+    let area = "all";
+    let selectedId = "acct-recon";
+
+    function textCell(value) {
+      const cell = document.createElement("td");
+      cell.textContent = value;
+      return cell;
+    }
+
+    function fillStatic(bodyId, rows) {
+      const body = document.getElementById(bodyId);
+      rows.forEach((row) => {
+        const tr = document.createElement("tr");
+        row.forEach((value) => tr.appendChild(textCell(value)));
+        body.appendChild(tr);
+      });
+    }
+
+    function visibleTools() {
+      return tools.filter((tool) => area === "all" || tool.areas.includes(area));
+    }
+
+    function renderFilters() {
+      const bar = document.getElementById("filters");
+      bar.replaceChildren();
+      areas.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = item.label;
+        button.setAttribute("aria-pressed", String(item.id === area));
+        button.addEventListener("click", () => {
+          area = item.id;
+          const visible = visibleTools();
+          if (!visible.some((tool) => tool.id === selectedId)) {
+            selectedId = visible[0] ? visible[0].id : selectedId;
+          }
+          history.replaceState(null, "", "#" + encodeURIComponent(selectedId));
+          render();
+        });
+        bar.appendChild(button);
+      });
+    }
+
+    function renderCatalog() {
+      const visible = visibleTools();
+      const body = document.getElementById("catalog-body");
+      body.replaceChildren();
+      const label = areas.find((item) => item.id === area).label;
+      document.getElementById("count").textContent =
+        visible.length + " of " + tools.length + " tools" + (area === "all" ? "" : " in " + label);
+
+      visible.forEach((tool) => {
+        const tr = document.createElement("tr");
+        if (tool.id === selectedId) tr.className = "is-open";
+        const nameCell = document.createElement("td");
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "tool-btn";
+        button.textContent = tool.name;
+        button.setAttribute("aria-pressed", String(tool.id === selectedId));
+        button.addEventListener("click", () => {
+          selectedId = tool.id;
+          history.replaceState(null, "", "#" + encodeURIComponent(tool.id));
+          render();
+        });
+        nameCell.appendChild(button);
+        tr.append(nameCell, textCell(tool.layer), textCell(tool.status));
+        body.appendChild(tr);
+      });
+    }
+
+    function renderDetail() {
+      const tool = tools.find((item) => item.id === selectedId) || visibleTools()[0];
+      const panel = document.getElementById("detail");
+      panel.replaceChildren();
+      if (!tool) return;
+
+      const kicker = document.createElement("div");
+      kicker.className = "detail-kicker";
+      const title = document.createElement("h3");
+      title.textContent = tool.name;
+      const badge = document.createElement("span");
+      badge.className = "badge";
+      badge.textContent = tool.status;
+      kicker.append(title, badge);
+
+      const meta = document.createElement("p");
+      meta.className = "meta";
+      meta.textContent = tool.maker + " · " + tool.layer;
+
+      const does = document.createElement("p");
+      does.textContent = tool.does;
+
+      const heading = document.createElement("h4");
+      heading.textContent = "Watch-outs";
+
+      const watch = document.createElement("p");
+      watch.textContent = tool.watch;
+
+      panel.append(kicker, meta, does, heading, watch);
+    }
+
+    function render() {
+      const visible = visibleTools();
+      if (visible.length && !visible.some((tool) => tool.id === selectedId)) {
+        selectedId = visible[0].id;
+      }
+      renderFilters();
+      renderCatalog();
+      renderDetail();
+    }
+
+    function readHash() {
+      const hash = decodeURIComponent(location.hash.replace(/^#/, ""));
+      if (areaIds.has(hash)) {
+        area = hash;
+        return;
+      }
+      if (tools.some((tool) => tool.id === hash)) selectedId = hash;
+    }
+
+    fillStatic("starts", starts);
+    fillStatic("layers-body", layers);
+    readHash();
+    render();
+    window.addEventListener("hashchange", () => {
+      readHash();
+      render();
+    });
+  </script>
+</body>
+</html>
