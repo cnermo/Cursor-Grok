@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Environment cleanup candidates</title>
+  <meta name="description" content="Power Platform environments worth reviewing for cleanup, ranked by how long since each environment was last changed. September 2026.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f4f3f0;
+      --surface: #fffcf8;
+      --text: #1c1b19;
+      --muted: #5c5852;
+      --faint: #7a756d;
+      --line: #e2ddd4;
+      --accent: #1f4d3a;
+      --accent-ink: #f7f6f2;
+      --warn-bg: #f8f1e4;
+      --warn-line: #e4d3ae;
+      --row: #f7f5f1;
+      --focus: #1f4d3a;
+      --strong: #9a3b2e;
+      --check: #2f5d8a;
+      --confirm: #8a847a;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 "Segoe UI", system-ui, sans-serif; }
+    .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 64px; }
+    h1 { margin: 0 0 8px; font-size: 1.75rem; line-height: 1.2; font-weight: 650; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 8px; font-size: 1.15rem; font-weight: 650; }
+    h3 { margin: 0 0 6px; font-size: 1rem; font-weight: 650; }
+    .lede { margin: 0; max-width: 72ch; color: var(--muted); }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 24px 0; }
+    .stat { background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; }
+    .stat strong { display: block; font-size: 1.35rem; font-weight: 650; }
+    .stat span { color: var(--muted); font-size: 0.875rem; }
+    .stat.strong strong { color: var(--strong); }
+    .stat.check strong { color: var(--check); }
+    .callout { background: var(--warn-bg); border: 1px solid var(--warn-line); padding: 14px 16px; }
+    .callout p { margin: 0; }
+    section { margin-top: 28px; }
+    .summary { background: var(--surface); border: 1px solid var(--line); padding: 18px 20px; }
+    .summary > p { margin: 0 0 14px; max-width: 80ch; }
+    .summary-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 28px; }
+    .summary-grid p, .summary-grid ul { margin: 0; color: var(--muted); }
+    .summary-grid ul { padding-left: 1.2rem; }
+    .summary-grid li + li { margin-top: 4px; }
+    code { font: 0.9em Consolas, "Cascadia Mono", monospace; background: var(--row); border: 1px solid var(--line); padding: 0 4px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+    button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 999px; padding: 6px 12px; }
+    button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .table-scroll { overflow: auto; max-height: 720px; border: 1px solid var(--line); background: var(--surface); }
+    table { width: 100%; min-width: 960px; border-collapse: collapse; background: var(--surface); font-size: 0.9375rem; }
+    th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+    th { position: sticky; top: 0; background: var(--surface); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--faint); }
+    tbody tr:nth-child(even) { background: var(--row); }
+    td.num, th.num { text-align: right; white-space: nowrap; }
+    td.date { white-space: nowrap; }
+    caption { caption-side: bottom; text-align: left; color: var(--faint); font-size: 0.8125rem; padding: 8px 12px; }
+    .priority { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .priority::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--confirm); }
+    .priority.strong::before { background: var(--strong); }
+    .priority.check::before { background: var(--check); }
+    .notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .notes p { margin: 0; color: var(--muted); }
+    details { background: var(--surface); border: 1px solid var(--line); padding: 10px 14px; }
+    details > summary { cursor: pointer; font-weight: 650; }
+    details ul { margin: 8px 0 0; padding-left: 1.2rem; columns: 3; color: var(--muted); }
+    .count, footer { color: var(--faint); font-size: 0.875rem; }
+    footer { margin-top: 32px; max-width: 85ch; }
+    @media (max-width: 800px) {
+      .stats, .summary-grid, .notes { grid-template-columns: 1fr; }
+      details ul { columns: 1; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>Environment cleanup candidates</h1>
+      <p class="lede">49 of the tenant's 112 Power Platform environments are worth reviewing, ranked by how long since the environment itself was last changed. As of September 23, 2026.</p>
+    </header>
+
+    <section class="stats" aria-label="Candidate counts">
+      <div class="stat strong"><strong id="stat-strong"></strong><span>Strong candidates</span></div>
+      <div class="stat check"><strong id="stat-check"></strong><span>Check a specific reason</span></div>
+      <div class="stat"><strong id="stat-confirm"></strong><span>Production, confirm owner</span></div>
+      <div class="stat"><strong id="stat-sandbox"></strong><span>Sandboxes (use tenant storage)</span></div>
+    </section>
+
+    <aside class="callout">
+      <h2>Last changed is not last used</h2>
+      <p>The date tracks changes to the environment's own settings, not whether people open its apps or add data. Treat this as a list to take to owners, not a delete list. Six Finance and Operations sandboxes that looked untouched for a year or more turned out to be in active use. Nothing in the tenant was changed to produce this list.</p>
+    </aside>
+
+    <section class="summary" aria-labelledby="summary-title">
+      <h2 id="summary-title">Summary</h2>
+      <p>There are 24 strong candidates, 16 that need a specific check, and 9 production environments to confirm with their owners. The 18 Finance and Operations environments in active use are excluded.</p>
+      <div class="summary-grid">
+        <div>
+          <h3>Sandboxes: 2 strong candidates, 9 to check</h3>
+          <p>These use the tenant's Dataverse and Finance and Operations storage, so removing them frees the most capacity.</p>
+          <ul>
+            <li><code>LVS-CXO-DEV</code>, unchanged since 2021.</li>
+            <li><code>LVS-GSD-CopilotStudio-Test</code>, the one US-region environment.</li>
+            <li>Five Finance and Operations sandboxes are not on the active list: <code>lvs-fo-testing</code>, <code>LVS-SUPPORT-01</code>, <code>LVS-SUPPORT-02</code>, <code>HS-LVS-DEV04</code> and <code>LVS-FO-DWRITE-TEST</code>. They're Lifecycle Services environments, so delete them there or coordinate both portals.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Developer and Teams: 22 strong candidates</h3>
+          <p>These mostly don't use the tenant's storage, so removing them is about clutter and governance.</p>
+          <ul>
+            <li>Developer environments include <code>Christian Bell's Environment</code>, never changed since 2022.</li>
+            <li>Among the Teams environments, the clearest is <code>IGS - GSD - 404 - Team not found</code>: never changed since 2021, and its name suggests the team was deleted.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Worth a specific check</h3>
+          <ul>
+            <li>Jeremy Blazev has three developer environments with the same name, created within 15 hours. He probably needs only one.</li>
+            <li>Two auto-named <code>PowerPagesDeveloper-*</code> environments came from Power Pages sign-ups on the same day.</li>
+            <li>The Microsoft Support copy from September 1 can go once its ticket is closed.</li>
+            <li><code>msdyn_viva</code> is a trial that has existed for almost four years.</li>
+            <li><code>icx</code> is a sandbox created in July. It shows in the tenant inventory but not in the admin environment list. Find out who created it.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Production: confirm with owners</h3>
+          <ul>
+            <li><code>Project Checklist</code> and the Customer Voice environments haven't changed in years but may hold survey data.</li>
+            <li><code>HO-INI-Investment Returns Team (DEV)</code> and <code>(UAT)</code> are typed as Production. If they're kept, they could be switched to Sandbox.</li>
+            <li><code>LVS-FO-POWERPLATFORM-PIPELINE</code> is Finance and Operations but not on the active list. The name suggests it hosts Power Platform pipelines, so check nothing deploys through it.</li>
+          </ul>
+          <h3 style="margin-top: 14px;">Next step</h3>
+          <p>The inventory lists each environment's creator only as an ID. Looking those up gives names and email addresses, which is the contact list for asking owners.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>All candidates</h2>
+      <div class="filters" id="filters" role="toolbar" aria-label="Filter by environment type"></div>
+      <p class="count" id="count"></p>
+      <div class="table-scroll">
+        <table>
+          <caption>Sorted by days since the environment was last changed. Priority: strong candidate, check a specific reason, or production to confirm with its owner.</caption>
+          <thead>
+            <tr><th>Environment</th><th>Type</th><th>Created</th><th>Last changed</th><th class="num">Days unchanged</th><th>Why it's here</th><th>Priority</th></tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="notes">
+      <div>
+        <h2>Where the savings are</h2>
+        <p>Sandboxes draw on the tenant's Dataverse and Finance and Operations storage, so they free the most capacity. Developer and Teams environments mostly don't, so removing them is about clutter and governance.</p>
+      </div>
+      <div>
+        <h2>Finance and Operations</h2>
+        <p>The active environments are excluded. The Finance and Operations ones still listed are not on the active list. They're managed in Lifecycle Services too, so delete them there, or coordinate both portals, so the Lifecycle Services project doesn't keep a broken link.</p>
+      </div>
+      <div>
+        <h2>Not listed</h2>
+        <p>Sales, Marketing, and ContactCenter trials created this month expire on their own. The Default environment ("Personal Productivity") can't be deleted.</p>
+      </div>
+    </section>
+
+    <section>
+      <details>
+        <summary>Active Finance and Operations environments, excluded (<span id="active-count"></span>)</summary>
+        <ul id="active-list"></ul>
+      </details>
+    </section>
+
+    <footer>
+      Source: Power Platform inventory (environment type, created date, and last-modified date) queried through the Power Platform CLI, plus installed-package checks for the Finance and Operations environments. Read-only queries run September 23, 2026 as the D365Admin_svc account. Days unchanged are counted to September 23, 2026.
+    </footer>
+  </main>
+  <script>
+    const asOf = "2026-09-23";
+    const groups = ["All", "Sandbox", "Developer", "Teams", "Trial / Support", "Production"];
+    const candidates = [
+      ["LVS-CXO-DEV", "Sandbox", "Sandbox", "2021-07-28", "2021-08-19", "No environment changes in five years.", "Strong"],
+      ["LVS-GSD-CopilotStudio-Test", "Sandbox", "Sandbox", "2024-10-03", "2025-08-22", "No changes in 13 months. Only environment in the US region; everything else is in Canada.", "Strong"],
+      ["lvs-fo-testing", "Sandbox", "Sandbox", "2024-09-25", "2025-12-01", "Finance and Operations (Lifecycle Services), not on the active list. The only member of the environment group \"Group 1\".", "Check"],
+      ["LVS-SUPPORT-01", "Sandbox", "Sandbox", "2025-08-02", "2026-02-26", "Finance and Operations (Lifecycle Services), not on the active list.", "Check"],
+      ["HS-LVS-DEV04", "Sandbox", "Sandbox", "2026-05-27", "2026-05-28", "Finance and Operations (Lifecycle Services), not on the active list. Unchanged since the day after creation.", "Check"],
+      ["LVS-SUPPORT-02", "Sandbox", "Sandbox", "2026-01-23", "2026-06-02", "Finance and Operations (Lifecycle Services), not on the active list.", "Check"],
+      ["LVS-FO-DWRITE-TEST", "Sandbox", "Sandbox", "2024-03-12", "2026-06-12", "Finance and Operations (Lifecycle Services), not on the active list. The name suggests dual-write testing.", "Check"],
+      ["pp-CopilotStudio-Test", "Sandbox", "Sandbox", "2025-08-08", "2025-09-16", "No changes in a year. Its production pair, pp-CopilotStudio-Prod, is equally quiet.", "Check"],
+      ["LVS-ITO-OurClients-DEV", "Sandbox", "Sandbox", "2025-08-22", "2025-08-22", "Part of a dev, test, and prod set. All three unchanged since August 2025.", "Check"],
+      ["LVS-ITO-OurClients-TEST", "Sandbox", "Sandbox", "2025-08-22", "2025-09-16", "Part of a dev, test, and prod set. All three unchanged since August 2025.", "Check"],
+      ["icx", "Sandbox", "Sandbox", "2026-07-22", "2026-07-22", "In the tenant inventory but not in the admin environment list, and never changed. Find out who created it.", "Check"],
+      ["Christian Bell's Environment", "Developer", "Developer", "2022-09-20", null, "Never changed in four years.", "Strong"],
+      ["Frederick Lee's Environment", "Developer", "Developer", "2024-03-27", "2025-04-30", "No changes in 17 months.", "Strong"],
+      ["Conferences", "Developer", "Developer", "2024-11-29", "2025-08-25", "No changes in 13 months.", "Strong"],
+      ["LVS-FAISAL-DEV-01", "Developer", "Developer", "2025-09-04", "2025-09-04", "Never changed after creation.", "Strong"],
+      ["Jeremy Blazev's Environment (1 of 3)", "Developer", "Developer", "2026-08-24", "2026-08-24", "Three environments with the same name, created within 15 hours, none changed since. Likely keep one.", "Check"],
+      ["Jeremy Blazev's Environment (2 of 3)", "Developer", "Developer", "2026-08-25", "2026-08-25", "Duplicate name, never changed.", "Check"],
+      ["Jeremy Blazev's Environment (3 of 3)", "Developer", "Developer", "2026-08-25", "2026-08-25", "Duplicate name, never changed.", "Check"],
+      ["PowerPagesDeveloper-082626-085124", "Developer", "Developer", "2026-08-26", "2026-08-26", "Auto-named by a Power Pages sign-up. Never changed.", "Check"],
+      ["PowerPagesDeveloper-082626-113718", "Developer", "Developer", "2026-08-26", "2026-08-26", "Second Power Pages sign-up the same day. Never changed.", "Check"],
+      ["msdyn_viva", "Trial", "Trial / Support", "2022-12-16", "2025-05-31", "A trial that has existed for almost four years. Confirm whether anything still depends on it.", "Check"],
+      ["orgfb1f362d_2607160040008069_20260901T183741", "Support", "Trial / Support", "2026-09-01", "2026-09-01", "Copy made by Microsoft Support, with Finance and Operations. Remove once the ticket is closed.", "Check"],
+      ["IGS - GSD - 404 - Team not found", "Teams", "Teams", "2021-03-02", "2021-03-02", "Never changed in five years, and the name suggests the team is gone.", "Strong"],
+      ["Optimize Command Post", "Teams", "Teams", "2021-04-16", "2021-07-23", "No changes in five years.", "Strong"],
+      ["HQ-INI-Business Excellence (BE)", "Teams", "Teams", "2021-05-19", "2021-05-19", "Never changed after creation.", "Strong"],
+      ["XB - INI - Daily Health Attestation", "Teams", "Teams", "2021-05-31", "2021-05-31", "Never changed after creation.", "Strong"],
+      ["XB-INI-OCM CoP", "Teams", "Teams", "2022-06-16", "2022-06-16", "Never changed after creation.", "Strong"],
+      ["IGS - GSD - Shaw Cablesystems", "Teams", "Teams", "2023-04-20", "2023-04-20", "Never changed after creation.", "Strong"],
+      ["CGY-INI-Neal Pickering's Lab", "Teams", "Teams", "2024-01-19", "2024-12-19", "No changes in 21 months.", "Strong"],
+      ["IGS-Collaboration", "Teams", "Teams", "2024-05-29", "2024-05-29", "Never changed after creation.", "Strong"],
+      ["XB - INI - Microsoft Funding", "Teams", "Teams", "2024-09-24", "2024-09-24", "Never changed after creation.", "Strong"],
+      ["XB-INI-AI Champions", "Teams", "Teams", "2025-03-19", "2025-03-19", "Never changed after creation.", "Strong"],
+      ["XB - TM - All Branches HSE Committee", "Teams", "Teams", "2022-10-06", "2025-04-29", "No changes in 17 months.", "Strong"],
+      ["DEN-TM-Fundation", "Teams", "Teams", "2023-01-10", "2025-04-29", "No changes in 17 months.", "Strong"],
+      ["AI Working Group", "Teams", "Teams", "2024-11-27", "2025-04-30", "No changes in 17 months.", "Strong"],
+      ["Jeff Gau and his DA", "Teams", "Teams", "2025-02-25", "2025-04-30", "No changes in 17 months.", "Strong"],
+      ["Power Virtual Agent on Teams", "Teams", "Teams", "2025-02-19", "2025-05-31", "No changes in 16 months.", "Strong"],
+      ["Calgary Branch Leadership", "Teams", "Teams", "2025-03-20", "2025-05-31", "No changes in 16 months.", "Strong"],
+      ["XB-INI-DevOps Cloud Enablement", "Teams", "Teams", "2025-05-14", "2025-05-14", "Never changed after creation.", "Strong"],
+      ["HO-TM-Administration-Executive Support", "Teams", "Teams", "2025-08-13", "2025-08-13", "Never changed after creation.", "Strong"],
+      ["Project Checklist", "Production", "Production", "2021-10-14", "2021-11-15", "No changes in almost five years.", "Confirm owner"],
+      ["HO-INI-Investment Returns Team", "Production", "Production", "2022-08-09", "2022-08-09", "Never changed after creation.", "Confirm owner"],
+      ["HO-INI-Investment Returns Team (DEV)", "Production", "Production", "2022-08-09", "2025-04-30", "A dev environment typed as Production. Could become a Sandbox if kept.", "Confirm owner"],
+      ["HO-INI-Investment Returns Team (UAT)", "Production", "Production", "2022-08-09", "2025-04-30", "A test environment typed as Production. Could become a Sandbox if kept.", "Confirm owner"],
+      ["LVS - ITO - Customer Voice", "Production", "Production", "2021-03-04", "2023-04-13", "No changes in three years. Survey data may still matter.", "Confirm owner"],
+      ["LVS - GSD - Customer Voice", "Production", "Production", "2022-10-05", "2023-04-12", "No changes in three years. Survey data may still matter.", "Confirm owner"],
+      ["LVS - CXO - Customer Voice", "Production", "Production", "2022-11-29", "2025-04-30", "No changes in 17 months. Survey data may still matter.", "Confirm owner"],
+      ["AI Lab", "Production", "Production", "2023-12-13", "2025-04-30", "A lab environment typed as Production, unchanged for 17 months.", "Confirm owner"],
+      ["LVS-FO-POWERPLATFORM-PIPELINE", "Production", "Production", "2024-01-24", "2026-05-19", "Finance and Operations (Lifecycle Services), not on the active list. The name suggests it hosts Power Platform pipelines, so check nothing deploys through it.", "Confirm owner"]
+    ];
+    const activeFinanceAndOperations = [
+      "LVS-FO-PROD", "lvs-fo-acceptance", "LVS-FO-AK-02", "lvs-fo-ce-test", "LVS-FO-CE-TEST-Cloud", "LVS-FO-CLN-TEST",
+      "LVS-FO-DEV-06", "LVS-FO-DEV-12", "LVS-FO-STELLA-DEV", "LVS-FO-SUPPORT-DEV-3", "lvs-fo-testing-01", "LVS-FO-UDE-AK",
+      "LVS-FO-UDE-CE-DEV1", "LVS-FO-UDE-CLN", "LVS-FO-USE-CONTOSO", "LVS-FO-USE-SUPPORT-01", "LVS-FO-USE-TEST-02", "LVS-FO-USE-TSTDEP"
+    ];
+
+    const priorityClass = { "Strong": "strong", "Check": "check", "Confirm owner": "confirm" };
+    let group = "All";
+
+    function idleDays(row) {
+      const last = row[4] || row[3];
+      return Math.floor((Date.parse(asOf) - Date.parse(last)) / 86400000);
+    }
+    function cell(value, className) {
+      const td = document.createElement("td");
+      td.textContent = value;
+      if (className) td.className = className;
+      return td;
+    }
+    function countWhere(test) {
+      return candidates.filter(test).length;
+    }
+    function render() {
+      const bar = document.getElementById("filters");
+      bar.replaceChildren();
+      groups.forEach((name) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        const n = name === "All" ? candidates.length : countWhere((row) => row[2] === name);
+        button.textContent = name + " (" + n + ")";
+        button.setAttribute("aria-pressed", String(name === group));
+        button.addEventListener("click", () => { group = name; render(); });
+        bar.appendChild(button);
+      });
+
+      const rows = candidates
+        .filter((row) => group === "All" || row[2] === group)
+        .sort((a, b) => idleDays(b) - idleDays(a));
+      document.getElementById("count").textContent = rows.length + " of " + candidates.length + " candidates";
+
+      const body = document.getElementById("rows");
+      body.replaceChildren();
+      rows.forEach((row) => {
+        const tr = document.createElement("tr");
+        const priority = document.createElement("td");
+        const label = document.createElement("span");
+        label.className = "priority " + priorityClass[row[6]];
+        label.textContent = row[6];
+        priority.appendChild(label);
+        tr.append(
+          cell(row[0]),
+          cell(row[1]),
+          cell(row[3], "date"),
+          cell(row[4] || "Never", "date"),
+          cell(idleDays(row).toLocaleString(), "num"),
+          cell(row[5]),
+          priority
+        );
+        body.appendChild(tr);
+      });
+    }
+
+    document.getElementById("stat-strong").textContent = countWhere((row) => row[6] === "Strong");
+    document.getElementById("stat-check").textContent = countWhere((row) => row[6] === "Check");
+    document.getElementById("stat-confirm").textContent = countWhere((row) => row[6] === "Confirm owner");
+    document.getElementById("stat-sandbox").textContent = countWhere((row) => row[2] === "Sandbox");
+    const activeList = document.getElementById("active-list");
+    activeFinanceAndOperations.forEach((name) => {
+      const li = document.createElement("li");
+      li.textContent = name;
+      activeList.appendChild(li);
+    });
+    document.getElementById("active-count").textContent = activeFinanceAndOperations.length;
+    render();
+  </script>
+</body>
+</html>
