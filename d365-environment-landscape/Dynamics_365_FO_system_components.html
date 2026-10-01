@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dynamics 365 F&amp;O system components</title>
+  <meta name="description" content="Finance and Operations system components: LVS custom model, ISVs, Tempus and Ceridian, Synapse Link, Dual-write, and Dataverse apps including Project Operations, Expense Management, and Customer Insights Journeys.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7f9;
+      --surface: #ffffff;
+      --text: #0e253d;
+      --muted: #4a5a6b;
+      --faint: #6b7886;
+      --line: #dde3e8;
+      --accent: #0e253d;
+      --accent-ink: #ffffff;
+      --brand-green: #54b948;
+      --brand-grey: #919094;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 Karbon, "Segoe UI", Verdana, sans-serif; }
+    .brandbar { background: var(--surface); border-bottom: 1px solid var(--line); border-top: 4px solid var(--brand-green); }
+    .brandbar-inner { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 14px 0; display: flex; align-items: center; justify-content: space-between; }
+    .brandbar svg { height: 34px; width: auto; display: block; }
+    .brandbar span { color: var(--faint); font-size: 0.8125rem; letter-spacing: 0.04em; }
+    .wrap { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 64px; }
+    .eyebrow { margin: 0 0 6px; color: var(--brand-grey); font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    h1 { margin: 0 0 10px; font-family: Feijoa, Georgia, serif; font-size: 2rem; font-weight: 600; line-height: 1.2; }
+    .lede { max-width: 74ch; color: var(--muted); margin: 0; }
+    .meta { color: var(--faint); font-size: 0.875rem; margin-top: 8px; }
+    .frame { margin-top: 24px; background: var(--surface); border: 1px solid var(--line); padding: 20px 12px; }
+    .frame svg { display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto; }
+    .legend { display: flex; flex-wrap: wrap; gap: 16px 24px; margin-top: 16px; font-size: 0.875rem; color: var(--muted); }
+    .legend i { display: inline-block; width: 28px; height: 4px; vertical-align: middle; margin-right: 6px; background: var(--accent); }
+    .legend .dash { background: repeating-linear-gradient(90deg, var(--brand-green) 0 6px, transparent 6px 10px); }
+    footer { margin-top: 28px; color: var(--faint); font-size: 0.875rem; max-width: 85ch; }
+    @media print {
+      body { background: #fff; }
+      .frame { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="brandbar">
+    <div class="brandbar-inner">
+      <svg viewBox="0 0 110 37" role="img" aria-label="Long View Systems" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#54B948" d="M15.03,24.84h19.79c0.74-1.97,1.15-4.11,1.15-6.34c0-9.91-8.03-17.94-17.94-17.94C8.13,0.56,0.09,8.59,0.09,18.5c0,9.91,8.03,17.94,17.94,17.94c6.06,0,11.41-3,14.66-7.6H9.66c-0.76,0-1.46-0.44-1.8-1.12c-0.34-0.68-0.26-1.5,0.21-2.11L22.24,7.17c0.67-0.88,1.93-1.04,2.81-0.37c0.88,0.67,1.04,1.93,0.37,2.81L14.54,23.77v0C14.09,24.48,14.59,24.84,15.03,24.84z"/>
+        <path fill="#919094" d="M45.72,23.17H43v-8.92c0-0.26-0.08-0.49-0.23-0.65c-0.15-0.17-0.38-0.25-0.63-0.25c-0.25,0-0.47,0.09-0.63,0.25c-0.16,0.17-0.23,0.4-0.23,0.65v9.62c0,0.24,0.06,0.47,0.22,0.65c0.15,0.18,0.39,0.28,0.68,0.28h3.54c0.22,0,0.44-0.06,0.6-0.2c0.16-0.14,0.25-0.36,0.25-0.61c0-0.25-0.09-0.47-0.25-0.61C46.16,23.23,45.95,23.17,45.72,23.17z"/>
+      </svg>
+      <span>Finance and Operations · D365 applications</span>
+    </div>
+  </div>
+  <main class="wrap">
+    <p class="eyebrow">Application architecture · F&amp;O and Dataverse</p>
+    <h1>System components and integrations</h1>
+    <p class="lede">Finance and Operations is the hub. The <strong>LVS model</strong> sits with Avalara Tax, TAS, and <strong>SK Global</strong> (SK_Common, SKS_BFC, Bank Fabric). Tempus, Ceridian, and <strong>BYOD</strong> (selected HRM tables) sit outside as integrations. Synapse Link lands finance data in the Data Lake. Dual-write reaches the Dataverse apps: Project Operations, Expense Management, and Customer Insights Journeys. More applications will be added as they are confirmed.</p>
+    <p class="meta">Working diagram · 30 September 2026</p>
+
+    <div class="frame" aria-label="Finance and Operations component diagram">
+      <svg viewBox="0 0 720 1280" xmlns="http://www.w3.org/2000/svg" role="img">
+        <title>Finance and Operations components, Dual-write, and Dataverse applications</title>
+        <defs>
+          <marker id="arr" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <polygon points="0 0, 10 4, 0 8" fill="#0e253d"/>
+          </marker>
+          <marker id="arr-g" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <polygon points="0 0, 10 4, 0 8" fill="#54b948"/>
+          </marker>
+        </defs>
+
+        <text x="220" y="22" fill="#919094" font-size="12" font-family="Segoe UI, Verdana, sans-serif" letter-spacing="1.2">ANALYTICS</text>
+        <rect x="220" y="32" width="280" height="64" rx="4" fill="#ffffff" stroke="#0e253d"/>
+        <text x="238" y="58" fill="#0e253d" font-size="15" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Azure Data Lake</text>
+        <text x="238" y="78" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Synapse Link landing zone</text>
+
+        <line x1="360" y1="148" x2="360" y2="98" stroke="#0e253d" stroke-width="1.75" marker-end="url(#arr)"/>
+        <text x="372" y="130" fill="#6b7886" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Synapse Link</text>
+
+        <rect x="40" y="148" width="640" height="430" rx="4" fill="#f8fafb" stroke="#0e253d" stroke-width="2"/>
+        <rect x="40" y="148" width="640" height="44" fill="#0e253d"/>
+        <text x="58" y="176" fill="#ffffff" font-size="16" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Dynamics 365 Finance and Operations</text>
+
+        <text x="58" y="216" fill="#919094" font-size="11" font-family="Segoe UI, Verdana, sans-serif" letter-spacing="1">CUSTOM CODE</text>
+        <rect x="58" y="226" width="604" height="56" fill="#ffffff" stroke="#54b948" stroke-width="1.5"/>
+        <text x="76" y="250" fill="#0e253d" font-size="15" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">LVS model</text>
+        <text x="76" y="270" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Customer AOT · ships in the deployable package</text>
+
+        <text x="58" y="308" fill="#919094" font-size="11" font-family="Segoe UI, Verdana, sans-serif" letter-spacing="1">ISV MODELS</text>
+        <rect x="58" y="318" width="294" height="70" fill="#ffffff" stroke="#0e253d"/>
+        <text x="76" y="344" fill="#0e253d" font-size="14" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Avalara Tax</text>
+        <text x="76" y="364" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Tax calculation · to AvaTax cloud</text>
+
+        <rect x="368" y="318" width="294" height="70" fill="#ffffff" stroke="#0e253d"/>
+        <text x="386" y="344" fill="#0e253d" font-size="14" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">TAS</text>
+        <text x="386" y="364" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Treasury Automation Suite</text>
+
+        <rect x="58" y="400" width="604" height="158" fill="#ffffff" stroke="#0e253d"/>
+        <text x="76" y="422" fill="#919094" font-size="11" font-family="Segoe UI, Verdana, sans-serif" letter-spacing="1">SK GLOBAL</text>
+        <rect x="76" y="434" width="278" height="52" fill="#f8fafb" stroke="#0e253d"/>
+        <text x="90" y="456" fill="#0e253d" font-size="14" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">SK_Common</text>
+        <text x="90" y="474" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Banking module</text>
+        <rect x="366" y="434" width="278" height="52" fill="#f8fafb" stroke="#0e253d"/>
+        <text x="380" y="456" fill="#0e253d" font-size="14" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">SKS_BFC</text>
+        <text x="380" y="474" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Bank Connectivity</text>
+        <rect x="76" y="496" width="568" height="48" fill="#f8fafb" stroke="#0e253d"/>
+        <text x="90" y="518" fill="#0e253d" font-size="14" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Bank Fabric</text>
+        <text x="90" y="536" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">SK Global suite component</text>
+
+        <text x="40" y="600" fill="#6b7886" font-size="11" font-family="Segoe UI, Verdana, sans-serif">Application binary: LVS + ISV models in one deployable package</text>
+
+        <text x="40" y="628" fill="#919094" font-size="12" font-family="Segoe UI, Verdana, sans-serif" letter-spacing="1.2">INTEGRATIONS</text>
+        <rect x="40" y="640" width="200" height="72" rx="4" fill="#ffffff" stroke="#0e253d"/>
+        <text x="56" y="670" fill="#0e253d" font-size="15" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Tempus</text>
+        <text x="56" y="692" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Point integration</text>
+        <rect x="260" y="640" width="200" height="72" rx="4" fill="#ffffff" stroke="#0e253d"/>
+        <text x="276" y="670" fill="#0e253d" font-size="15" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Ceridian Payroll</text>
+        <text x="276" y="692" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Point integration</text>
+        <rect x="480" y="640" width="200" height="72" rx="4" fill="#ffffff" stroke="#2a6f4e" stroke-width="1.5"/>
+        <text x="496" y="670" fill="#0e253d" font-size="15" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Dual-write</text>
+        <text x="496" y="692" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">to Dataverse apps</text>
+        <line x1="140" y1="640" x2="140" y2="580" stroke="#0e253d" stroke-width="1.75" marker-end="url(#arr)"/>
+        <line x1="360" y1="640" x2="360" y2="580" stroke="#0e253d" stroke-width="1.75" marker-end="url(#arr)"/>
+        <line x1="580" y1="640" x2="580" y2="580" stroke="#2a6f4e" stroke-width="2" marker-end="url(#arr-g)"/>
+
+        <rect x="40" y="728" width="420" height="72" rx="4" fill="#ffffff" stroke="#0e253d"/>
+        <text x="56" y="758" fill="#0e253d" font-size="15" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">BYOD</text>
+        <text x="56" y="780" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Selected HRM tables to Azure SQL</text>
+        <line x1="250" y1="578" x2="250" y2="726" stroke="#0e253d" stroke-width="1.75" marker-end="url(#arr)"/>
+
+        <line x1="580" y1="712" x2="580" y2="814" stroke="#2a6f4e" stroke-width="2" marker-end="url(#arr-g)"/>
+        <rect x="40" y="816" width="640" height="264" rx="4" fill="#f3f6f4" stroke="#2a6f4e" stroke-width="1.5"/>
+        <text x="58" y="840" fill="#2a6f4e" font-size="11" font-family="Segoe UI, Verdana, sans-serif" letter-spacing="1">D365 APPLICATIONS · DATAVERSE</text>
+
+        <rect x="58" y="852" width="294" height="96" fill="#ffffff" stroke="#0e253d"/>
+        <text x="74" y="874" fill="#0e253d" font-size="14" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Project Operations</text>
+        <text x="74" y="892" fill="#4a5a6b" font-size="11" font-family="Segoe UI, Verdana, sans-serif">Dual-write maps</text>
+        <rect x="74" y="902" width="262" height="34" fill="#f8fafb" stroke="#0e253d"/>
+        <text x="86" y="924" fill="#0e253d" font-size="12" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Project Operations Team Member</text>
+
+        <rect x="368" y="852" width="294" height="96" fill="#ffffff" stroke="#0e253d"/>
+        <text x="384" y="874" fill="#0e253d" font-size="14" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Expense Management</text>
+        <text x="384" y="892" fill="#4a5a6b" font-size="11" font-family="Segoe UI, Verdana, sans-serif">Dynamics 365 Expense</text>
+        <rect x="384" y="902" width="262" height="34" fill="#f8fafb" stroke="#0e253d"/>
+        <text x="396" y="924" fill="#0e253d" font-size="12" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Expense Mobile</text>
+
+        <rect x="58" y="960" width="604" height="48" fill="#ffffff" stroke="#0e253d"/>
+        <text x="74" y="982" fill="#0e253d" font-size="14" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Customer Insights Journeys</text>
+        <text x="74" y="1000" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Marketing journeys on Dataverse</text>
+
+        <rect x="58" y="1020" width="604" height="44" fill="#f3f6f4" stroke="#2a6f4e" stroke-dasharray="5 4"/>
+        <text x="74" y="1048" fill="#6b7886" font-size="13" font-family="Segoe UI, Verdana, sans-serif">More applications to follow</text>
+
+        <text x="40" y="1112" fill="#919094" font-size="12" font-family="Segoe UI, Verdana, sans-serif" letter-spacing="1.2">ISV CLOUD / BANKS</text>
+        <rect x="40" y="1124" width="310" height="64" rx="4" fill="#ffffff" stroke="#0e253d" stroke-dasharray="5 4"/>
+        <text x="56" y="1150" fill="#0e253d" font-size="14" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Avalara AvaTax</text>
+        <text x="56" y="1170" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Called by Avalara Tax</text>
+        <rect x="370" y="1124" width="310" height="64" rx="4" fill="#ffffff" stroke="#0e253d" stroke-dasharray="5 4"/>
+        <text x="386" y="1150" fill="#0e253d" font-size="14" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">Bank networks</text>
+        <text x="386" y="1170" fill="#4a5a6b" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Called by SKS_BFC / Bank Fabric</text>
+      </svg>
+    </div>
+
+    <div class="legend">
+      <span><i></i>Runtime integration</span>
+      <span><i class="dash"></i>ISV cloud / apps still to add</span>
+    </div>
+
+    <footer>
+      Avalara Tax and SK Global (SK_Common, SKS_BFC, Bank Fabric) are models inside Finance and Operations that call out to AvaTax and bank networks. Tempus and Ceridian are separate systems. BYOD exports selected HRM entities to a customer Azure SQL database. Dual-write reaches Project Operations, Expense Management (including Expense Mobile), and Customer Insights Journeys. More Dataverse apps can be added as they are confirmed.
+    </footer>
+  </main>
+</body>
+</html>

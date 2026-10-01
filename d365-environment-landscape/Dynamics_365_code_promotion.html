@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dynamics 365 code promotion</title>
+  <meta name="description" content="Visio-style code promotion path for the six environments on the current list: two development streams, F&O testing, Acceptance, Production, and Unified production-support testing.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7f9;
+      --surface: #ffffff;
+      --text: #0e253d;
+      --muted: #4a5a6b;
+      --faint: #6b7886;
+      --line: #dde3e8;
+      --accent: #0e253d;
+      --accent-ink: #ffffff;
+      --brand-green: #54b948;
+      --brand-grey: #919094;
+      --lcs: #0e253d;
+      --upe: #2a6f4e;
+      --support: #6b4f1d;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 Karbon, "Segoe UI", Verdana, sans-serif; }
+    .brandbar { background: var(--surface); border-bottom: 1px solid var(--line); border-top: 4px solid var(--brand-green); }
+    .brandbar-inner { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 14px 0; display: flex; align-items: center; justify-content: space-between; }
+    .brandbar svg { height: 34px; width: auto; display: block; }
+    .brandbar span { color: var(--faint); font-size: 0.8125rem; letter-spacing: 0.04em; }
+    .wrap { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 64px; }
+    .eyebrow { margin: 0 0 6px; color: var(--brand-grey); font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    h1 { margin: 0 0 10px; font-family: Feijoa, Georgia, serif; font-size: 2rem; font-weight: 600; line-height: 1.2; }
+    .lede { max-width: 74ch; color: var(--muted); margin: 0; }
+    .meta { color: var(--faint); font-size: 0.875rem; margin-top: 8px; }
+    .frame { margin-top: 24px; background: var(--surface); border: 1px solid var(--line); padding: 20px 16px; }
+    .frame svg { display: block; width: 100%; max-width: 720px; height: auto; margin: 0 auto; }
+    .legend { display: flex; flex-wrap: wrap; gap: 16px 24px; margin-top: 16px; font-size: 0.875rem; color: var(--muted); }
+    .legend i { display: inline-block; width: 28px; height: 4px; vertical-align: middle; margin-right: 6px; }
+    .legend .solid { background: var(--accent); }
+    .legend .dash { background: repeating-linear-gradient(90deg, var(--support) 0 6px, transparent 6px 10px); }
+    .legend .lcs, .legend .upe { width: 12px; height: 12px; margin-right: 6px; }
+    .legend .lcs { background: var(--lcs); }
+    .legend .upe { background: var(--upe); }
+    footer { margin-top: 28px; color: var(--faint); font-size: 0.875rem; max-width: 85ch; }
+    @media print {
+      body { background: #fff; }
+      .frame { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="brandbar">
+    <div class="brandbar-inner">
+      <svg viewBox="0 0 110 37" role="img" aria-label="Long View Systems" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#54B948" d="M15.03,24.84h19.79c0.74-1.97,1.15-4.11,1.15-6.34c0-9.91-8.03-17.94-17.94-17.94C8.13,0.56,0.09,8.59,0.09,18.5c0,9.91,8.03,17.94,17.94,17.94c6.06,0,11.41-3,14.66-7.6H9.66c-0.76,0-1.46-0.44-1.8-1.12c-0.34-0.68-0.26-1.5,0.21-2.11L22.24,7.17c0.67-0.88,1.93-1.04,2.81-0.37c0.88,0.67,1.04,1.93,0.37,2.81L14.54,23.77v0C14.09,24.48,14.59,24.84,15.03,24.84z"/>
+        <path fill="#919094" d="M45.72,23.17H43v-8.92c0-0.26-0.08-0.49-0.23-0.65c-0.15-0.17-0.38-0.25-0.63-0.25c-0.25,0-0.47,0.09-0.63,0.25c-0.16,0.17-0.23,0.4-0.23,0.65v9.62c0,0.24,0.06,0.47,0.22,0.65c0.15,0.18,0.39,0.28,0.68,0.28h3.54c0.22,0,0.44-0.06,0.6-0.2c0.16-0.14,0.25-0.36,0.25-0.61c0-0.25-0.09-0.47-0.25-0.61C46.16,23.23,45.95,23.17,45.72,23.17z"/>
+      </svg>
+      <span>Dynamics 365 code promotion</span>
+    </div>
+  </div>
+  <main class="wrap">
+    <p class="eyebrow">Six environments on the current list</p>
+    <h1>Code promotion path</h1>
+    <p class="lede">F&amp;O and CE development both enter <strong>lvs-fo-testing-01</strong>. Release candidates promote from Acceptance to Production as a single LCS image. Production Support testing is Unified: it refreshes from Production and is not a hop on the LCS package path.</p>
+    <p class="meta">Source: environment list you supplied · 30 September 2026</p>
+
+    <div class="frame" aria-label="Code promotion flowchart">
+      <svg viewBox="0 0 720 980" xmlns="http://www.w3.org/2000/svg" role="img">
+        <title>Code promotion from development through testing and Acceptance to Production, with a Unified support loop</title>
+        <defs>
+          <marker id="arrow" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <polygon points="0 0, 10 4, 0 8" fill="#0e253d"/>
+          </marker>
+          <marker id="arrow-green" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <polygon points="0 0, 10 4, 0 8" fill="#54b948"/>
+          </marker>
+          <marker id="arrow-support" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+            <polygon points="0 0, 10 4, 0 8" fill="#6b4f1d"/>
+          </marker>
+        </defs>
+
+        <text x="40" y="28" fill="#919094" font-size="12" font-family="Segoe UI, Verdana, sans-serif" letter-spacing="1.2">1 · DEVELOPMENT</text>
+        <rect x="40" y="44" width="300" height="100" rx="4" fill="#ffffff" stroke="#0e253d" stroke-width="1.5"/>
+        <rect x="40" y="44" width="8" height="100" fill="#0e253d"/>
+        <text x="62" y="70" fill="#0e253d" font-size="16" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">LVS-FO-AK-02</text>
+        <text x="62" y="92" fill="#4a5a6b" font-size="13" font-family="Segoe UI, Verdana, sans-serif">F&amp;O Development</text>
+        <text x="62" y="114" fill="#6b7886" font-size="12" font-family="Segoe UI, Verdana, sans-serif">LCS · b633552e-ab1e-e909-b665-2fc323c662f3</text>
+
+        <rect x="380" y="44" width="300" height="100" rx="4" fill="#ffffff" stroke="#0e253d" stroke-width="1.5"/>
+        <rect x="380" y="44" width="8" height="100" fill="#0e253d"/>
+        <text x="402" y="70" fill="#0e253d" font-size="16" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">LVS-FO-DEV-06</text>
+        <text x="402" y="92" fill="#4a5a6b" font-size="13" font-family="Segoe UI, Verdana, sans-serif">CE Development</text>
+        <text x="402" y="114" fill="#6b7886" font-size="12" font-family="Segoe UI, Verdana, sans-serif">LCS · abf26509-9cc4-e46f-aee7-ea35f3e8e9f6</text>
+
+        <path d="M190 144 V176 H360 V198" fill="none" stroke="#0e253d" stroke-width="1.75" marker-end="url(#arrow)"/>
+        <path d="M530 144 V176 H360 V198" fill="none" stroke="#0e253d" stroke-width="1.75"/>
+        <text x="248" y="170" fill="#6b7886" font-size="12" font-family="Segoe UI, Verdana, sans-serif">package</text>
+        <text x="372" y="170" fill="#6b7886" font-size="12" font-family="Segoe UI, Verdana, sans-serif">CE / dual-write joins</text>
+
+        <text x="210" y="230" fill="#919094" font-size="12" font-family="Segoe UI, Verdana, sans-serif" letter-spacing="1.2">2 · TESTING</text>
+        <rect x="210" y="246" width="300" height="100" rx="4" fill="#ffffff" stroke="#0e253d" stroke-width="1.5"/>
+        <rect x="210" y="246" width="8" height="100" fill="#0e253d"/>
+        <text x="232" y="272" fill="#0e253d" font-size="16" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">lvs-fo-testing-01</text>
+        <text x="232" y="294" fill="#4a5a6b" font-size="13" font-family="Segoe UI, Verdana, sans-serif">F&amp;O testing</text>
+        <text x="232" y="316" fill="#6b7886" font-size="12" font-family="Segoe UI, Verdana, sans-serif">LCS · c89cde22-7701-eedc-9fc3-84174d83a0f6</text>
+
+        <line x1="360" y1="346" x2="360" y2="398" stroke="#0e253d" stroke-width="1.75" marker-end="url(#arrow)"/>
+        <text x="372" y="380" fill="#6b7886" font-size="12" font-family="Segoe UI, Verdana, sans-serif">signed off</text>
+
+        <text x="210" y="430" fill="#919094" font-size="12" font-family="Segoe UI, Verdana, sans-serif" letter-spacing="1.2">3 · PRE-PRODUCTION</text>
+        <rect x="210" y="446" width="300" height="100" rx="4" fill="#ffffff" stroke="#0e253d" stroke-width="1.5"/>
+        <rect x="210" y="446" width="8" height="100" fill="#54b948"/>
+        <text x="232" y="472" fill="#0e253d" font-size="16" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">lvs-fo-acceptance</text>
+        <text x="232" y="494" fill="#4a5a6b" font-size="13" font-family="Segoe UI, Verdana, sans-serif">Pre-Production · RC source</text>
+        <text x="232" y="516" fill="#6b7886" font-size="12" font-family="Segoe UI, Verdana, sans-serif">LCS · b7f66174-6c93-e3fa-8cfa-e57c2710a2f4</text>
+
+        <line x1="360" y1="546" x2="360" y2="598" stroke="#54b948" stroke-width="2.25" marker-end="url(#arrow-green)"/>
+        <text x="372" y="580" fill="#2a6f4e" font-size="12" font-weight="650" font-family="Segoe UI, Verdana, sans-serif">LCS image to Production</text>
+
+        <text x="210" y="630" fill="#919094" font-size="12" font-family="Segoe UI, Verdana, sans-serif" letter-spacing="1.2">4 · PRODUCTION</text>
+        <rect x="210" y="646" width="300" height="88" rx="4" fill="#0e253d"/>
+        <text x="232" y="678" fill="#ffffff" font-size="16" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">LVS-FO-PROD</text>
+        <text x="232" y="700" fill="#d5dde4" font-size="13" font-family="Segoe UI, Verdana, sans-serif">Production · LCS · cdd5ec4c-799d-48a3-978a-c4cec0f9a95d</text>
+
+        <path d="M510 690 H600 V778" fill="none" stroke="#6b4f1d" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-support)"/>
+        <text x="510" y="736" fill="#6b4f1d" font-size="12" font-family="Segoe UI, Verdana, sans-serif">refresh</text>
+
+        <text x="210" y="800" fill="#919094" font-size="12" font-family="Segoe UI, Verdana, sans-serif" letter-spacing="1.2">SUPPORT LOOP · UNIFIED</text>
+        <rect x="210" y="816" width="300" height="100" rx="4" fill="#ffffff" stroke="#2a6f4e" stroke-width="1.5"/>
+        <rect x="210" y="816" width="8" height="100" fill="#2a6f4e"/>
+        <text x="232" y="842" fill="#0e253d" font-size="15" font-weight="700" font-family="Segoe UI, Verdana, sans-serif">LVS-FO-USE-SUPPORT-01</text>
+        <text x="232" y="864" fill="#4a5a6b" font-size="13" font-family="Segoe UI, Verdana, sans-serif">Production Support testing</text>
+        <text x="232" y="886" fill="#6b7886" font-size="12" font-family="Segoe UI, Verdana, sans-serif">Unified · 1309d189-4039-e31b-93ea-2f4521e35af2</text>
+
+        <path d="M210 866 H80 V496 H208" fill="none" stroke="#6b4f1d" stroke-width="1.5" stroke-dasharray="6 4" marker-end="url(#arrow-support)"/>
+        <text x="40" y="690" fill="#6b4f1d" font-size="12" font-family="Segoe UI, Verdana, sans-serif">hotfix back</text>
+        <text x="40" y="706" fill="#6b4f1d" font-size="12" font-family="Segoe UI, Verdana, sans-serif">to Acceptance</text>
+        <text x="40" y="722" fill="#6b4f1d" font-size="12" font-family="Segoe UI, Verdana, sans-serif">then LCS image</text>
+      </svg>
+    </div>
+
+    <div class="legend">
+      <span><i class="solid"></i>LCS package / image promote</span>
+      <span><i class="dash"></i>Support loop (refresh and hotfix return)</span>
+      <span><i class="lcs"></i>Lifecycle Services</span>
+      <span><i class="upe"></i>Unified</span>
+    </div>
+
+    <footer>
+      Production still takes the Acceptance snapshot: Microsoft binaries plus customer AOT together. <code>LVS-FO-USE-SUPPORT-01</code> can prove a fix or a refresh, but it cannot replace Acceptance as the production release-candidate source while Production stays on Lifecycle Services.
+    </footer>
+  </main>
+</body>
+</html>

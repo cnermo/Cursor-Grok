@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finance and Operations landscape · LCS vs Unified</title>
+  <meta name="description" content="14 active Finance and Operations environments split by Lifecycle Services versus Unified, then by Production, Pre-Production, Testing, and Development.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7f9;
+      --surface: #ffffff;
+      --text: #0e253d;
+      --muted: #4a5a6b;
+      --faint: #6b7886;
+      --line: #dde3e8;
+      --accent: #0e253d;
+      --accent-ink: #ffffff;
+      --brand-green: #54b948;
+      --brand-grey: #919094;
+      --warn-bg: #f1f8ef;
+      --warn-line: #b9dfb3;
+      --lcs: #0e253d;
+      --upe: #2a6f4e;
+      --empty: #eef1f4;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 Karbon, "Segoe UI", Verdana, sans-serif; }
+    .brandbar { background: var(--surface); border-bottom: 1px solid var(--line); border-top: 4px solid var(--brand-green); }
+    .brandbar-inner { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 14px 0; display: flex; align-items: center; justify-content: space-between; }
+    .brandbar svg { height: 34px; width: auto; display: block; }
+    .brandbar span { color: var(--faint); font-size: 0.8125rem; letter-spacing: 0.04em; }
+    .wrap { width: min(1180px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 64px; }
+    .eyebrow { margin: 0 0 6px; color: var(--brand-grey); font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    h1, h2 { font-family: Feijoa, Georgia, serif; font-weight: 600; }
+    h1 { margin: 0 0 10px; font-size: 2rem; line-height: 1.2; }
+    .lede { max-width: 74ch; color: var(--muted); margin: 0; }
+    .meta { color: var(--faint); font-size: 0.875rem; margin-top: 8px; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 24px 0; }
+    .stat { background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; }
+    .stat strong { display: block; font-size: 1.4rem; font-weight: 650; }
+    .stat span { color: var(--muted); font-size: 0.875rem; }
+    .note { background: var(--warn-bg); border: 1px solid var(--warn-line); padding: 14px 16px; }
+    .note p { margin: 0; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 16px; }
+    .filters button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--text); padding: 6px 12px; border-radius: 999px; }
+    .filters button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    .board { display: grid; grid-template-columns: 132px 1fr 1fr; gap: 12px; align-items: start; }
+    .col-head { background: var(--accent); color: var(--accent-ink); padding: 10px 14px; font-weight: 650; }
+    .col-head.upe { background: var(--upe); }
+    .col-head small { display: block; font-weight: 400; opacity: 0.8; font-size: 0.75rem; }
+    .lane { padding-top: 8px; }
+    .lane strong { display: block; }
+    .lane span { color: var(--faint); font-size: 0.75rem; }
+    .col { display: grid; gap: 8px; min-height: 56px; }
+    .card { background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--lcs); padding: 10px 12px; }
+    .card.upe { border-left-color: var(--upe); }
+    .card h3 { margin: 0 0 4px; font-size: 0.95rem; font-weight: 650; }
+    .card p { margin: 0; color: var(--muted); font-size: 0.8125rem; }
+    .card .url { color: var(--faint); font: 0.75rem Consolas, "Cascadia Mono", monospace; margin-top: 4px; word-break: break-all; }
+    .empty { background: var(--empty); border: 1px dashed var(--line); color: var(--faint); padding: 12px; font-size: 0.8125rem; min-height: 56px; }
+    footer { margin-top: 32px; color: var(--faint); font-size: 0.875rem; max-width: 85ch; }
+    @media (max-width: 800px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      .board { grid-template-columns: 1fr; }
+      .col-head:first-of-type { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="brandbar">
+    <div class="brandbar-inner">
+      <svg viewBox="0 0 110 37" role="img" aria-label="Long View Systems" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#54B948" d="M15.03,24.84h19.79c0.74-1.97,1.15-4.11,1.15-6.34c0-9.91-8.03-17.94-17.94-17.94C8.13,0.56,0.09,8.59,0.09,18.5c0,9.91,8.03,17.94,17.94,17.94c6.06,0,11.41-3,14.66-7.6H9.66c-0.76,0-1.46-0.44-1.8-1.12c-0.34-0.68-0.26-1.5,0.21-2.11L22.24,7.17c0.67-0.88,1.93-1.04,2.81-0.37c0.88,0.67,1.04,1.93,0.37,2.81L14.54,23.77v0C14.09,24.48,14.59,24.84,15.03,24.84z"/>
+        <path fill="#919094" d="M45.72,23.17H43v-8.92c0-0.26-0.08-0.49-0.23-0.65c-0.15-0.17-0.38-0.25-0.63-0.25c-0.25,0-0.47,0.09-0.63,0.25c-0.16,0.17-0.23,0.4-0.23,0.65v9.62c0,0.24,0.06,0.47,0.22,0.65c0.15,0.18,0.39,0.28,0.68,0.28h3.54c0.22,0,0.44-0.06,0.6-0.2c0.16-0.14,0.25-0.36,0.25-0.61c0-0.25-0.09-0.47-0.25-0.61C46.16,23.23,45.95,23.17,45.72,23.17z"/>
+      </svg>
+      <span>Dynamics 365 environment landscape</span>
+    </div>
+  </div>
+  <main class="wrap">
+    <p class="eyebrow">Active Finance and Operations set</p>
+    <h1>LCS versus Unified</h1>
+    <p class="lede">Fourteen environments from the IDs you supplied. Columns are the host platform. Rows are Production, Pre-Production (Acceptance), Testing, and Development. Power Platform lists every non-prod as Sandbox; the lanes come from name and known purpose.</p>
+    <p class="meta">Source: Power Platform admin list · 30 September 2026</p>
+
+    <div class="stats">
+      <div class="stat"><strong>14</strong><span>Active environments</span></div>
+      <div class="stat"><strong>7</strong><span>Lifecycle Services</span></div>
+      <div class="stat"><strong>7</strong><span>Unified</span></div>
+      <div class="stat"><strong>0</strong><span>Unified Production or Acceptance</span></div>
+    </div>
+
+    <aside class="note">
+      <p><strong>Promotion path still lives on LCS.</strong> Production and Acceptance have no Unified counterpart. Code still promotes the Acceptance image to Production until the ICM on environment URL length is cleared.</p>
+    </aside>
+
+    <div class="filters" role="toolbar" aria-label="Filter by host">
+      <button type="button" data-host="All" aria-pressed="true">Both hosts</button>
+      <button type="button" data-host="LCS" aria-pressed="false">Lifecycle Services</button>
+      <button type="button" data-host="Unified" aria-pressed="false">Unified</button>
+    </div>
+
+    <div class="board" id="board"></div>
+    <footer>LCS environments use an operations-* Dataverse URL, except Production (<code>lvshrprod.crm3.dynamics.com</code>). Unified environments sit in the D365 F&amp;O Unified Environments group, or use a UDE / USE name without that prefix.</footer>
+  </main>
+  <script>
+    const lanes = ["Production", "Pre-Production", "Testing", "Development"];
+    const envs = [
+      { host: "LCS", lane: "Production", name: "LVS-FO-PROD", purpose: "Live Finance and Operations. Stays on LCS until the ICM URL issue is resolved.", url: "lvshrprod.crm3.dynamics.com" },
+      { host: "LCS", lane: "Pre-Production", name: "lvs-fo-acceptance", purpose: "Designated UAT. Release-candidate source for production.", url: "operations-lvs-fo-acceptance.crm3.dynamics.com" },
+      { host: "LCS", lane: "Testing", name: "lvs-fo-testing-01", purpose: "LCS test sandbox. Kept with Acceptance and Production for LCS deploys.", url: "operations-lvs-fo-testing-01.crm3.dynamics.com" },
+      { host: "LCS", lane: "Testing", name: "lvs-fo-ce-test", purpose: "Customer Engagement / F&O test.", url: "operations-lvs-fo-ce-test-1.crm3.dynamics.com" },
+      { host: "LCS", lane: "Development", name: "LVS-FO-DEV-06", purpose: "Lifecycle Services development sandbox.", url: "operations-lvs-fo-dev-06.crm3.dynamics.com" },
+      { host: "LCS", lane: "Development", name: "LVS-FO-SUPPORT-DEV-3", purpose: "Support development sandbox.", url: "operations-lvs-fo-support-dev-3.crm3.dynamics.com" },
+      { host: "LCS", lane: "Development", name: "LVS-FO-AK-02", purpose: "Named developer sandbox (AK).", url: "operations-lvs-fo-ak-02.crm3.dynamics.com" },
+      { host: "Unified", lane: "Testing", name: "LVS-FO-USE-TEST-03", purpose: "Unified user-test environment.", url: "lvs-fo-use-test-03.crm3.dynamics.com" },
+      { host: "Unified", lane: "Testing", name: "LVS-FO-USE-TSTDEP", purpose: "Power Platform release-pipeline proving ground.", url: "lvs-fo-use-tstdep.crm3.dynamics.com" },
+      { host: "Unified", lane: "Testing", name: "LVS-FO-USE-SUPPORT-01", purpose: "Unified support / user-test. Security-group pilot.", url: "org97811cbb.crm3.dynamics.com" },
+      { host: "Unified", lane: "Testing", name: "LVS-FO-USE-CONTOSO", purpose: "Unified Contoso / demo sandbox.", url: "lvs-fo-use-contoso.crm3.dynamics.com" },
+      { host: "Unified", lane: "Development", name: "LVS-FO-UDE-AK", purpose: "Unified developer environment (AK).", url: "lvs-fo-ude-ak-02.crm3.dynamics.com" },
+      { host: "Unified", lane: "Development", name: "LVS-FO-UDE-CE-DEV1", purpose: "Unified CE developer environment.", url: "lvs-fo-ude-ce-dev1.crm3.dynamics.com" },
+      { host: "Unified", lane: "Development", name: "LVS-FO-UDE-CLN", purpose: "Unified CLN developer environment.", url: "lvs-fo-ude-cln.crm3.dynamics.com" }
+    ];
+
+    let hostFilter = "All";
+
+    function cards(host, lane) {
+      const list = envs.filter((e) => e.host === host && e.lane === lane && (hostFilter === "All" || e.host === hostFilter));
+      if (!list.length) {
+        const empty = (lane === "Production" || lane === "Pre-Production") && host === "Unified"
+          ? "None. Still LCS-only."
+          : hostFilter !== "All" && hostFilter !== host
+            ? "Hidden by filter."
+            : "None in this lane.";
+        return `<div class="empty">${empty}</div>`;
+      }
+      return list.map((e) => `
+        <article class="card ${e.host === "Unified" ? "upe" : ""}">
+          <h3>${e.name}</h3>
+          <p>${e.purpose}</p>
+          <div class="url">${e.url}</div>
+        </article>`).join("");
+    }
+
+    function render() {
+      const board = document.getElementById("board");
+      board.innerHTML = `
+        <div></div>
+        <div class="col-head">Lifecycle Services <small>7 environments · production path</small></div>
+        <div class="col-head upe">Unified <small>7 environments · test and development</small></div>
+        ${lanes.map((lane) => `
+          <div class="lane"><strong>${lane}</strong><span>${lane === "Pre-Production" ? "Acceptance" : ""}</span></div>
+          <div class="col">${cards("LCS", lane)}</div>
+          <div class="col">${cards("Unified", lane)}</div>
+        `).join("")}
+      `;
+    }
+
+    document.querySelectorAll(".filters button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        hostFilter = btn.dataset.host;
+        document.querySelectorAll(".filters button").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+        render();
+      });
+    });
+    render();
+  </script>
+</body>
+</html>
