@@ -57,8 +57,28 @@
     .card.upe { border-left-color: var(--upe); }
     .card h3 { margin: 0 0 4px; font-size: 0.95rem; font-weight: 650; }
     .card p { margin: 0; color: var(--muted); font-size: 0.8125rem; }
-    .card .url { color: var(--faint); font: 0.75rem Consolas, "Cascadia Mono", monospace; margin-top: 4px; word-break: break-all; }
+    .card .kind { margin: 6px 0 0; color: var(--faint); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; }
+    .card-links { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 8px; }
+    .details-link { display: inline-block; padding: 0; border: 0; background: none; color: #2a6f4e; font: inherit; font-size: 0.8125rem; font-weight: 650; text-decoration: underline; cursor: pointer; }
+    .details-link:focus-visible { outline: 2px solid var(--brand-green); outline-offset: 2px; }
     .empty { background: var(--empty); border: 1px dashed var(--line); color: var(--faint); padding: 12px; font-size: 0.8125rem; min-height: 56px; }
+    .popup[hidden] { display: none; }
+    .popup { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 24px; }
+    .popup-backdrop { position: absolute; inset: 0; background: rgba(14, 37, 61, 0.45); }
+    .popup-panel { position: relative; width: min(560px, 100%); max-height: min(84vh, 760px); overflow: auto; background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--brand-green); padding: 20px 20px 16px; }
+    .popup-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+    .popup-panel h2 { margin: 0; font-size: 1.35rem; }
+    .popup-kicker { margin: 0 0 4px; color: var(--brand-grey); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    .popup-close { font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--text); padding: 4px 10px; }
+    .popup-panel dl { margin: 16px 0 0; display: grid; grid-template-columns: 12.5rem 1fr; gap: 10px 16px; }
+    .popup-panel dt { color: var(--faint); font-size: 0.8125rem; }
+    .popup-panel dd { margin: 0; font-size: 0.875rem; word-break: break-word; }
+    .popup-panel a { color: #2a6f4e; }
+    .popup-source { margin: 16px 0 0; color: var(--faint); font-size: 0.75rem; }
+    @media (max-width: 560px) {
+      .popup-panel dl { grid-template-columns: 1fr; gap: 2px 0; }
+      .popup-panel dt { margin-top: 8px; }
+    }
     footer { margin-top: 32px; color: var(--faint); font-size: 0.875rem; max-width: 85ch; }
     @media (max-width: 800px) {
       .stats { grid-template-columns: 1fr 1fr; }
@@ -101,25 +121,206 @@
     </div>
 
     <div class="board" id="board"></div>
-    <footer>LCS environments use an operations-* Dataverse URL, except Production (<code>lvshrprod.crm3.dynamics.com</code>). Unified environments sit in the D365 F&amp;O Unified Environments group, or use a UDE / USE name without that prefix.</footer>
+    <footer>Each card keeps the Power Platform type, Production or Sandbox. CRM and F&amp;O URLs, versions, and environment IDs open from Environment details. CE Applications lists the installed Project Operations, Expense Management, and Customer Insights Journeys packages. Three LCS cloud-hosted dev boxes do not report an application version in Power Platform.</footer>
+
+    <div class="popup" id="env-popup" hidden>
+      <div class="popup-backdrop" data-close></div>
+      <div class="popup-panel" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+        <p class="popup-kicker" id="popup-kicker"></p>
+        <div class="popup-head">
+          <h2 id="popup-title"></h2>
+          <button type="button" class="popup-close" data-close>Close</button>
+        </div>
+        <dl id="popup-body"></dl>
+        <p class="popup-source" id="popup-source"></p>
+      </div>
+    </div>
   </main>
   <script>
     const lanes = ["Production", "Pre-Production", "Testing", "Development"];
     const envs = [
-      { host: "LCS", lane: "Production", name: "LVS-FO-PROD", purpose: "Live Finance and Operations. Stays on LCS until the ICM URL issue is resolved.", url: "lvshrprod.crm3.dynamics.com" },
-      { host: "LCS", lane: "Pre-Production", name: "lvs-fo-acceptance", purpose: "Designated UAT. Release-candidate source for production.", url: "operations-lvs-fo-acceptance.crm3.dynamics.com" },
-      { host: "LCS", lane: "Testing", name: "lvs-fo-testing-01", purpose: "LCS test sandbox. Kept with Acceptance and Production for LCS deploys.", url: "operations-lvs-fo-testing-01.crm3.dynamics.com" },
-      { host: "LCS", lane: "Testing", name: "lvs-fo-ce-test", purpose: "Customer Engagement / F&O test.", url: "operations-lvs-fo-ce-test-1.crm3.dynamics.com" },
-      { host: "LCS", lane: "Development", name: "LVS-FO-DEV-06", purpose: "Lifecycle Services development sandbox.", url: "operations-lvs-fo-dev-06.crm3.dynamics.com" },
-      { host: "LCS", lane: "Development", name: "LVS-FO-SUPPORT-DEV-3", purpose: "Support development sandbox.", url: "operations-lvs-fo-support-dev-3.crm3.dynamics.com" },
-      { host: "LCS", lane: "Development", name: "LVS-FO-AK-02", purpose: "Named developer sandbox (AK).", url: "operations-lvs-fo-ak-02.crm3.dynamics.com" },
-      { host: "Unified", lane: "Testing", name: "LVS-FO-USE-TEST-03", purpose: "Unified user-test environment.", url: "lvs-fo-use-test-03.crm3.dynamics.com" },
-      { host: "Unified", lane: "Testing", name: "LVS-FO-USE-TSTDEP", purpose: "Power Platform release-pipeline proving ground.", url: "lvs-fo-use-tstdep.crm3.dynamics.com" },
-      { host: "Unified", lane: "Testing", name: "LVS-FO-USE-SUPPORT-01", purpose: "Unified support / user-test. Security-group pilot.", url: "org97811cbb.crm3.dynamics.com" },
-      { host: "Unified", lane: "Testing", name: "LVS-FO-USE-CONTOSO", purpose: "Unified Contoso / demo sandbox.", url: "lvs-fo-use-contoso.crm3.dynamics.com" },
-      { host: "Unified", lane: "Development", name: "LVS-FO-UDE-AK", purpose: "Unified developer environment (AK).", url: "lvs-fo-ude-ak-02.crm3.dynamics.com" },
-      { host: "Unified", lane: "Development", name: "LVS-FO-UDE-CE-DEV1", purpose: "Unified CE developer environment.", url: "lvs-fo-ude-ce-dev1.crm3.dynamics.com" },
-      { host: "Unified", lane: "Development", name: "LVS-FO-UDE-CLN", purpose: "Unified CLN developer environment.", url: "lvs-fo-ude-cln.crm3.dynamics.com" }
+      { host: "LCS", lane: "Production", kind: "Production", name: "LVS-FO-PROD", purpose: "Live Finance and Operations. Stays on LCS until the ICM URL issue is resolved.", details: {
+        crmUrl: "https://lvshrprod.crm3.dynamics.com", foUrl: "https://lvs-fo-prod.operations.dynamics.com",
+        applicationVersion: "10.0.2645.136", platformVersion: "7.0.7996.119",
+        foEnvironmentId: "70be68b1-041f-4bbb-9d81-0a99b78c34ac", powerPlatformEnvironmentId: "cdd5ec4c-799d-48a3-978a-c4cec0f9a95d",
+        dataverseOrganizationId: "f9868b86-d6a9-422c-b0b1-1e51284e0b9a", dataverseVersion: "9.2.26091.144",
+        deployment: "LCS production", region: "Canada Central", state: "Enabled", created: "13 August 2020", aos: "4 observed of 8"
+      }, ceApps: [
+        { name: "Project Operations", version: "4.170.3539.1", state: "Installed" },
+        { name: "Expense Management", version: "3.2.2789.317", state: "Installed" },
+        { name: "Customer Insights Journeys", version: "1.122.2010.706", state: "Installed" },
+        { name: "Customer Insights Journeys Application", version: "1.3.1162.80", state: "Installed" },
+        { name: "Customer Insights Journeys standard data", version: "1.122.2002.0", state: "Installed" }
+      ] },
+      { host: "LCS", lane: "Pre-Production", kind: "Sandbox", name: "lvs-fo-acceptance", purpose: "Designated UAT. Release-candidate source for production.", details: {
+        crmUrl: "https://operations-lvs-fo-acceptance.crm3.dynamics.com", foUrl: "https://lvs-fo-acceptance.sandbox.operations.dynamics.com",
+        applicationVersion: "10.0.2645.136", platformVersion: "7.0.7996.119",
+        foEnvironmentId: "f994588e-a13e-4d9f-bb31-aac975d4f7ea", powerPlatformEnvironmentId: "b7f66174-6c93-e3fa-8cfa-e57c2710a2f4",
+        dataverseOrganizationId: "8b566a51-2470-ef11-a66d-0022483d7df6", dataverseVersion: "9.2.26092.142",
+        deployment: "LCS sandbox", region: "Canada Central", state: "Enabled", created: "10 September 2024", aos: "1 observed of 6"
+      }, ceApps: [
+        { name: "Project Operations", version: "4.171.3551.6", state: "Installed" },
+        { name: "Expense Management", version: "3.2.2789.317", state: "Installed" },
+        { name: "Customer Insights Journeys", version: "1.122.2010.705", state: "Installed" },
+        { name: "Customer Insights Journeys Application", version: "1.3.1162.52", state: "Installed" },
+        { name: "Customer Insights Journeys standard data", version: "1.122.2001.0", state: "Installed" }
+      ] },
+      { host: "LCS", lane: "Testing", kind: "Sandbox", name: "lvs-fo-testing-01", purpose: "LCS test sandbox. Kept with Acceptance and Production for LCS deploys.", details: {
+        crmUrl: "https://operations-lvs-fo-testing-01.crm3.dynamics.com", foUrl: "https://lvs-fo-testing-01.sandbox.operations.dynamics.com",
+        applicationVersion: "10.0.2645.136", platformVersion: "7.0.7996.119",
+        foEnvironmentId: "ef6925a7-4ddd-45a0-a90a-fc69c03b36c5", powerPlatformEnvironmentId: "c89cde22-7701-eedc-9fc3-84174d83a0f6",
+        dataverseOrganizationId: "437abddb-c0cb-f011-89f5-6045bd5bd6f4", dataverseVersion: "9.2.26092.142",
+        deployment: "LCS sandbox", region: "Canada Central", state: "Enabled", created: "1 December 2025", aos: "1 observed of 6"
+      }, ceApps: [
+        { name: "Project Operations", version: "4.171.3551.6", state: "Installed" },
+        { name: "Expense Management", version: "3.3.3524.1", state: "Installed" },
+        { name: "Customer Insights Journeys", version: "1.122.2010.706", state: "Installed" },
+        { name: "Customer Insights Journeys Application", version: "1.3.1162.80", state: "Installed" },
+        { name: "Customer Insights Journeys standard data", version: "1.122.2010.0", state: "Installed" }
+      ] },
+      { host: "LCS", lane: "Testing", kind: "Sandbox", name: "lvs-fo-ce-test", purpose: "Customer Engagement / F&O test.", details: {
+        crmUrl: "https://operations-lvs-fo-ce-test-1.crm3.dynamics.com", foUrl: "https://lvs-fo-ce-test.sandbox.operations.dynamics.com",
+        applicationVersion: "10.0.2790.46", platformVersion: "7.0.8199.32",
+        foEnvironmentId: "8e8f98b9-229b-4f52-a8be-725dd082b19e", powerPlatformEnvironmentId: "c273415a-c0b2-ea2d-be6a-4d8c8012f8f2",
+        dataverseOrganizationId: "e32453aa-62a5-f011-8706-002248ae24f7", dataverseVersion: "9.2.26092.142",
+        deployment: "Unified sandbox", region: "Canada Central", state: "Enabled", created: "10 October 2025", aos: "1 observed of 10"
+      }, ceApps: [
+        { name: "Project Operations", version: "4.170.3539.1", state: "Installed" },
+        { name: "Expense Management", version: "3.2.2789.317", state: "Installed" },
+        { name: "Customer Insights Journeys", version: "1.122.2010.706", state: "Installed" },
+        { name: "Customer Insights Journeys Application", version: "1.3.1162.80", state: "Installed" },
+        { name: "Customer Insights Journeys standard data", version: "1.122.2002.0", state: "Installed" }
+      ] },
+      { host: "LCS", lane: "Development", kind: "Sandbox", name: "LVS-FO-DEV-06", purpose: "Lifecycle Services development sandbox.", details: {
+        crmUrl: "https://operations-lvs-fo-dev-06.crm3.dynamics.com", foUrl: "https://lvs-fo-dev-0631151d87700c6f1adevaos.axcloud.dynamics.com",
+        applicationVersion: "Not reported", platformVersion: "Not reported",
+        foEnvironmentId: "c8a2ab8f-4480-4f15-b273-c4df004cfb33", powerPlatformEnvironmentId: "abf26509-9cc4-e46f-aee7-ea35f3e8e9f6",
+        dataverseOrganizationId: "94592a2f-a2b1-ee11-a564-6045bd5bd6f3", dataverseVersion: "9.2.26092.142",
+        deployment: "LCS cloud-hosted", region: "Canada Central", state: "Enabled", created: "13 January 2024"
+      }, ceApps: [
+        { name: "Project Operations", version: "4.171.3551.6", state: "Installed" },
+        { name: "Expense Management", version: "3.2.2789.317", state: "Installed" },
+        { name: "Customer Insights Journeys", version: "1.122.2010.706", state: "Installed" },
+        { name: "Customer Insights Journeys Application", version: "1.3.1162.80", state: "Installed" },
+        { name: "Customer Insights Journeys standard data", version: "1.122.2010.0", state: "Installed" }
+      ] },
+      { host: "LCS", lane: "Development", kind: "Sandbox", name: "LVS-FO-SUPPORT-DEV-3", purpose: "Support development sandbox.", details: {
+        crmUrl: "https://operations-lvs-fo-support-dev-3.crm3.dynamics.com", foUrl: "https://lvs-fo-support-dev-31c1b2c5a78d9b98edevaos.axcloud.dynamics.com",
+        applicationVersion: "Not reported", platformVersion: "Not reported",
+        foEnvironmentId: "e922be73-2d3c-4f22-b8ca-c093b5009f1f", powerPlatformEnvironmentId: "89344ff7-c14e-ee16-bae1-92feb78329f3",
+        dataverseOrganizationId: "949300a0-f8f3-ef11-933d-002248ae2af4", dataverseVersion: "9.2.26092.142",
+        deployment: "LCS cloud-hosted", region: "Canada Central", state: "Enabled", created: "26 February 2025"
+      }, ceApps: [
+        { name: "Project Operations", version: "4.170.3539.1", state: "Installed" },
+        { name: "Expense Management", version: "3.2.2789.317", state: "Installed" },
+        { name: "Customer Insights Journeys", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys Application", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys standard data", version: "", state: "Not installed" }
+      ] },
+      { host: "LCS", lane: "Development", kind: "Sandbox", name: "LVS-FO-AK-02", purpose: "Named developer sandbox (AK).", details: {
+        crmUrl: "https://operations-lvs-fo-ak-02.crm3.dynamics.com", foUrl: "https://lvs-fo-ak-020312f052e0d7274cdevaos.axcloud.dynamics.com",
+        applicationVersion: "Not reported", platformVersion: "Not reported",
+        foEnvironmentId: "8dffefbe-02d5-4c1c-a6af-0cf798ebcf9f", powerPlatformEnvironmentId: "b633552e-ab1e-e909-b665-2fc323c662f3",
+        dataverseOrganizationId: "d76e5c34-7b83-f011-8589-0022483d7af5", dataverseVersion: "9.2.26092.142",
+        deployment: "LCS cloud-hosted", region: "Canada Central", state: "Enabled", created: "28 August 2025"
+      }, ceApps: [
+        { name: "Project Operations", version: "", state: "Not installed" },
+        { name: "Expense Management", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys Application", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys standard data", version: "", state: "Not installed" }
+      ] },
+      { host: "Unified", lane: "Testing", kind: "Sandbox", name: "LVS-FO-USE-TEST-03", purpose: "Unified user-test environment.", details: {
+        crmUrl: "https://lvs-fo-use-test-03.crm3.dynamics.com", foUrl: "https://lvs-fo-use-test-03.operations.dynamics.com",
+        applicationVersion: "10.0.2790.46", platformVersion: "7.0.8199.32",
+        foEnvironmentId: "58b1c1bb-f16c-e4d6-9cbe-cc7c26ca4af4", powerPlatformEnvironmentId: "58b1c1bb-f16c-e4d6-9cbe-cc7c26ca4af4",
+        dataverseOrganizationId: "58a267f1-12b9-f111-aaa0-6045bd5bd6f6", dataverseVersion: "9.2.26092.142",
+        deployment: "Unified sandbox", region: "Canada Central", state: "Enabled", created: "25 September 2026", aos: "1 observed of 10"
+      }, ceApps: [
+        { name: "Project Operations", version: "4.170.3539.1", state: "Installed" },
+        { name: "Expense Management", version: "3.2.2789.317", state: "Installed" },
+        { name: "Customer Insights Journeys", version: "1.122.2010.706", state: "Installed" },
+        { name: "Customer Insights Journeys Application", version: "1.3.1162.80", state: "Installed" },
+        { name: "Customer Insights Journeys standard data", version: "1.122.2002.0", state: "Installed" }
+      ] },
+      { host: "Unified", lane: "Testing", kind: "Sandbox", name: "LVS-FO-USE-TSTDEP", purpose: "Power Platform release-pipeline proving ground.", details: {
+        crmUrl: "https://lvs-fo-use-tstdep.crm3.dynamics.com", foUrl: "https://lvs-fo-use-tstdep.operations.dynamics.com",
+        applicationVersion: "10.0.2790.46", platformVersion: "7.0.8199.32",
+        foEnvironmentId: "b534b976-578a-e62c-b14b-ff717c0a30f1", powerPlatformEnvironmentId: "b534b976-578a-e62c-b14b-ff717c0a30f1",
+        dataverseOrganizationId: "99757234-7c1d-f111-8c77-0022483d7df5", dataverseVersion: "9.2.26092.142",
+        deployment: "Unified developer", region: "Canada Central", state: "Enabled", created: "11 March 2026", aos: "1 observed of 1"
+      }, ceApps: [
+        { name: "Project Operations", version: "4.170.3539.1", state: "Installed" },
+        { name: "Expense Management", version: "3.2.2789.317", state: "Installed" },
+        { name: "Customer Insights Journeys", version: "1.122.2010.706", state: "Installed" },
+        { name: "Customer Insights Journeys Application", version: "1.3.1162.80", state: "Installed" },
+        { name: "Customer Insights Journeys standard data", version: "1.122.2002.0", state: "Installed" }
+      ] },
+      { host: "Unified", lane: "Testing", kind: "Sandbox", name: "LVS-FO-USE-SUPPORT-01", purpose: "Unified support / user-test. Security-group pilot.", details: {
+        crmUrl: "https://org97811cbb.crm3.dynamics.com", foUrl: "https://org97811cbb.operations.dynamics.com",
+        applicationVersion: "10.0.2790.46", platformVersion: "7.0.8199.32",
+        foEnvironmentId: "1309d189-4039-e31b-93ea-2f4521e35af2", powerPlatformEnvironmentId: "1309d189-4039-e31b-93ea-2f4521e35af2",
+        dataverseOrganizationId: "b85c3fbd-1211-f111-8c79-002248ae2af5", dataverseVersion: "9.2.26092.142",
+        deployment: "Unified sandbox", region: "Canada Central", state: "Enabled", created: "23 February 2026", aos: "1 observed of 10"
+      }, ceApps: [
+        { name: "Project Operations", version: "4.170.3539.1", state: "Installed" },
+        { name: "Expense Management", version: "3.2.2789.317", state: "Installed" },
+        { name: "Customer Insights Journeys", version: "1.122.2010.706", state: "Installed" },
+        { name: "Customer Insights Journeys Application", version: "1.3.1162.68", state: "Installed" },
+        { name: "Customer Insights Journeys standard data", version: "1.122.2002.0", state: "Installed" }
+      ] },
+      { host: "Unified", lane: "Testing", kind: "Sandbox", name: "LVS-FO-USE-CONTOSO", purpose: "Unified Contoso / demo sandbox.", details: {
+        crmUrl: "https://lvs-fo-use-contoso.crm3.dynamics.com", foUrl: "https://lvs-fo-use-contoso.operations.dynamics.com",
+        applicationVersion: "10.0.2790.46", platformVersion: "7.0.8199.32",
+        foEnvironmentId: "823f0926-1047-e136-a905-8dd3ff0903f3", powerPlatformEnvironmentId: "823f0926-1047-e136-a905-8dd3ff0903f3",
+        dataverseOrganizationId: "715b00a2-7b28-f111-afbe-0022483d7cf2", dataverseVersion: "9.2.26092.142",
+        deployment: "Unified sandbox", region: "Canada Central", state: "Enabled", created: "25 March 2026", aos: "1 observed of 10"
+      }, ceApps: [
+        { name: "Project Operations", version: "", state: "Not installed" },
+        { name: "Expense Management", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys Application", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys standard data", version: "", state: "Not installed" }
+      ] },
+      { host: "Unified", lane: "Development", kind: "Sandbox", name: "LVS-FO-UDE-AK", purpose: "Unified developer environment (AK).", details: {
+        crmUrl: "https://lvs-fo-ude-ak-02.crm3.dynamics.com", foUrl: "https://lvs-fo-ude-ak-02.operations.dynamics.com",
+        applicationVersion: "10.0.2790.46", platformVersion: "7.0.8199.32",
+        foEnvironmentId: "4c5a81e0-5439-e8d5-9c13-be3d790d74f5", powerPlatformEnvironmentId: "4c5a81e0-5439-e8d5-9c13-be3d790d74f5",
+        dataverseOrganizationId: "dd7b5530-8c21-f111-8c77-0022483d7df7", dataverseVersion: "9.2.26092.142",
+        deployment: "Unified developer", region: "Canada Central", state: "Enabled", created: "16 March 2026", aos: "1 observed of 1"
+      }, ceApps: [
+        { name: "Project Operations", version: "4.170.3539.1", state: "Installed" },
+        { name: "Expense Management", version: "3.2.2789.317", state: "Installed" },
+        { name: "Customer Insights Journeys", version: "1.122.2010.706", state: "Installed" },
+        { name: "Customer Insights Journeys Application", version: "1.3.1162.68", state: "Installed" },
+        { name: "Customer Insights Journeys standard data", version: "1.122.2002.0", state: "Installed" }
+      ] },
+      { host: "Unified", lane: "Development", kind: "Sandbox", name: "LVS-FO-UDE-CE-DEV1", purpose: "Unified CE developer environment.", details: {
+        crmUrl: "https://lvs-fo-ude-ce-dev1.crm3.dynamics.com", foUrl: "https://lvs-fo-ude-ce-dev1.operations.dynamics.com",
+        applicationVersion: "10.0.2790.46", platformVersion: "7.0.8199.32",
+        foEnvironmentId: "0e88a3a7-1a21-e094-9a6a-2489f7df16f1", powerPlatformEnvironmentId: "0e88a3a7-1a21-e094-9a6a-2489f7df16f1",
+        dataverseOrganizationId: "cc85d4b1-4437-f111-afc0-0022483d72f0", dataverseVersion: "9.2.26092.142",
+        deployment: "Unified developer", region: "Canada Central", state: "Enabled", created: "13 April 2026", aos: "1 observed of 1"
+      }, ceApps: [
+        { name: "Project Operations", version: "", state: "Not installed" },
+        { name: "Expense Management", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys Application", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys standard data", version: "", state: "Not installed" }
+      ] },
+      { host: "Unified", lane: "Development", kind: "Sandbox", name: "LVS-FO-UDE-CLN", purpose: "Unified CLN developer environment.", details: {
+        crmUrl: "https://lvs-fo-ude-cln.crm3.dynamics.com", foUrl: "https://lvs-fo-ude-cln.operations.dynamics.com",
+        applicationVersion: "10.0.2790.46", platformVersion: "7.0.8199.32",
+        foEnvironmentId: "75c90e34-6941-e7a5-8b4d-30bf39dd40f1", powerPlatformEnvironmentId: "75c90e34-6941-e7a5-8b4d-30bf39dd40f1",
+        dataverseOrganizationId: "4a08d5a8-ae9d-f111-b8cf-6045bd5bd4f1", dataverseVersion: "9.2.26092.142",
+        deployment: "Unified developer", region: "Canada Central", state: "Enabled", created: "21 August 2026", aos: "1 observed of 1"
+      }, ceApps: [
+        { name: "Project Operations", version: "", state: "Not installed" },
+        { name: "Expense Management", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys Application", version: "", state: "Not installed" },
+        { name: "Customer Insights Journeys standard data", version: "", state: "Not installed" }
+      ] }
     ];
 
     let hostFilter = "All";
@@ -138,8 +339,67 @@
         <article class="card ${e.host === "Unified" ? "upe" : ""}">
           <h3>${e.name}</h3>
           <p>${e.purpose}</p>
-          <div class="url">${e.url}</div>
+          <p class="kind">${e.kind}</p>
+          <div class="card-links">
+            <button type="button" class="details-link" data-popup="env" data-env="${e.name}">Environment details</button>
+            <button type="button" class="details-link" data-popup="ce" data-env="${e.name}">CE Applications</button>
+          </div>
         </article>`).join("");
+    }
+
+    function field(label, value, href) {
+      const body = href ? `<a href="${href}" target="_blank" rel="noopener noreferrer">${value}</a>` : value;
+      return `<dt>${label}</dt><dd>${body}</dd>`;
+    }
+
+    function openPopup(name) {
+      const env = envs.find((e) => e.name === name && e.details);
+      if (!env) return;
+      const d = env.details;
+      document.getElementById("popup-kicker").textContent = `${env.host} · ${env.lane}`;
+      document.getElementById("popup-title").textContent = env.name;
+      document.getElementById("popup-body").innerHTML = [
+        field("CRM URL", d.crmUrl, d.crmUrl),
+        field("F&O URL", d.foUrl, d.foUrl),
+        field("Application version", d.applicationVersion),
+        field("Platform version", d.platformVersion),
+        field("F&O environment ID", d.foEnvironmentId),
+        field("Power Platform environment ID", d.powerPlatformEnvironmentId),
+        field("Dataverse organization ID", d.dataverseOrganizationId),
+        field("Dataverse version", d.dataverseVersion),
+        field("Deployment", d.deployment),
+        field("Region", d.region),
+        field("State", d.state),
+        field("Created", d.created),
+        d.aos ? field("AOS", d.aos) : ""
+      ].join("");
+      document.getElementById("popup-source").textContent = "Source: Power Platform admin · 30 September 2026.";
+      showPopup();
+    }
+
+    function openCePopup(name) {
+      const env = envs.find((e) => e.name === name && e.ceApps);
+      if (!env) return;
+      document.getElementById("popup-kicker").textContent = `${env.host} · Customer Engagement`;
+      document.getElementById("popup-title").textContent = env.name;
+      document.getElementById("popup-body").innerHTML = env.ceApps.map((app) => field(app.name, app.state === "Installed" ? `${app.version} · Installed` : "Not installed")).join("");
+      document.getElementById("popup-source").textContent = "Installed Dataverse application packages · 30 September 2026. Expense Mobile and Project Operations Team Member are not separate packages.";
+      showPopup();
+    }
+
+    function showPopup() {
+      const popup = document.getElementById("env-popup");
+      popup.hidden = false;
+      popup.querySelector(".popup-close").focus();
+    }
+
+    let popupOpener = null;
+
+    function closePopup() {
+      const popup = document.getElementById("env-popup");
+      if (popup.hidden) return;
+      popup.hidden = true;
+      if (popupOpener) popupOpener.focus();
     }
 
     function render() {
@@ -155,6 +415,20 @@
         `).join("")}
       `;
     }
+
+    document.getElementById("board").addEventListener("click", (event) => {
+      const link = event.target.closest(".details-link");
+      if (!link) return;
+      popupOpener = link;
+      if (link.dataset.popup === "ce") openCePopup(link.dataset.env);
+      else openPopup(link.dataset.env);
+    });
+    document.getElementById("env-popup").addEventListener("click", (event) => {
+      if (event.target.closest("[data-close]")) closePopup();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closePopup();
+    });
 
     document.querySelectorAll(".filters button").forEach((btn) => {
       btn.addEventListener("click", () => {
