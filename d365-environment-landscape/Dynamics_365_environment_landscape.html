@@ -73,8 +73,14 @@
     .popup-panel dl { margin: 16px 0 0; display: grid; grid-template-columns: 12.5rem 1fr; gap: 10px 16px; }
     .popup-panel dt { color: var(--faint); font-size: 0.8125rem; }
     .popup-panel dd { margin: 0; font-size: 0.875rem; word-break: break-word; }
+    .popup-panel label { color: inherit; }
+    .popup-panel input[type="text"] { width: 100%; box-sizing: border-box; font: inherit; font-size: 0.875rem; color: var(--text); background: var(--surface); border: 1px solid var(--line); padding: 4px 8px; }
     .popup-panel a { color: #2a6f4e; }
     .popup-source { margin: 16px 0 0; color: var(--faint); font-size: 0.75rem; }
+    .share-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; margin-top: 20px; }
+    .share-bar button { font: inherit; cursor: pointer; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); padding: 6px 12px; }
+    .share-bar button:disabled { opacity: 0.6; cursor: default; }
+    .share-bar p { margin: 0; color: var(--muted); font-size: 0.875rem; max-width: 72ch; }
     @media (max-width: 560px) {
       .popup-panel dl { grid-template-columns: 1fr; gap: 2px 0; }
       .popup-panel dt { margin-top: 8px; }
@@ -121,7 +127,12 @@
     </div>
 
     <div class="board" id="board"></div>
-    <footer>Each card keeps the Power Platform type, Production or Sandbox. CRM and F&amp;O URLs, versions, and environment IDs open from Environment details. CE Applications lists the installed Project Operations, Expense Management, and Customer Insights Journeys packages. Three LCS cloud-hosted dev boxes do not report an application version in Power Platform.</footer>
+    <div class="share-bar">
+      <button type="button" id="save-shared">Save shared file</button>
+      <p id="share-status"></p>
+    </div>
+    <footer>Each card keeps the Power Platform type, Production or Sandbox. CRM and F&amp;O URLs, versions, and environment IDs open from Environment details. F&amp;O Custom Code is stored in this HTML file. CE Applications lists the installed Project Operations, Expense Management, and Customer Insights Journeys packages. Three LCS cloud-hosted dev boxes do not report an application version in Power Platform.</footer>
+    <script type="application/json" id="fo-custom-code-data">{}</script>
 
     <div class="popup" id="env-popup" hidden>
       <div class="popup-backdrop" data-close></div>
@@ -352,6 +363,132 @@
       return `<dt>${label}</dt><dd>${body}</dd>`;
     }
 
+    const draftKey = "lvs-fo-custom-code-draft";
+    const legacyKey = "lvs-fo-custom-code";
+    let codes = {};
+    let fileBase = "{}";
+    let dirty = false;
+    let sourceHtml = "";
+
+    function canon(obj) {
+      const out = {};
+      Object.keys(obj || {}).sort().forEach((key) => {
+        const value = String(obj[key] ?? "").trim();
+        if (value) out[key] = value;
+      });
+      return JSON.stringify(out);
+    }
+
+    function readEmbeddedCodes() {
+      try { return JSON.parse(document.getElementById("fo-custom-code-data").textContent || "{}"); }
+      catch { return {}; }
+    }
+
+    function readDraft() {
+      try {
+        const draft = JSON.parse(localStorage.getItem(draftKey) || "null");
+        if (draft && draft.codes && draft.base) return draft;
+      } catch { /* ignore a damaged draft */ }
+      return null;
+    }
+
+    function loadCodes() {
+      const embedded = readEmbeddedCodes();
+      fileBase = canon(embedded);
+      const legacy = localStorage.getItem(legacyKey);
+      if (legacy && !localStorage.getItem(draftKey)) {
+        try {
+          const parsed = JSON.parse(legacy);
+          if (parsed && !parsed.codes) localStorage.setItem(draftKey, JSON.stringify({ base: fileBase, codes: parsed }));
+        } catch { /* the old value was not a version list */ }
+        localStorage.removeItem(legacyKey);
+      }
+      const draft = readDraft();
+      codes = draft && draft.base === fileBase ? { ...draft.codes } : { ...embedded };
+      dirty = canon(codes) !== fileBase;
+    }
+
+    function rememberDraft() {
+      localStorage.setItem(draftKey, JSON.stringify({ base: fileBase, codes }));
+      dirty = canon(codes) !== fileBase;
+      updateShareStatus();
+    }
+
+    function customCodeField(name) {
+      const value = String(codes[name] || "")
+        .replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+      return `<dt><label for="fo-custom-code">F&amp;O Custom Code</label></dt><dd><input id="fo-custom-code" type="text" value="${value}" autocomplete="off" spellcheck="false" aria-label="F&amp;O Custom Code"></dd>`;
+    }
+
+    function bindCustomCode(name) {
+      const input = document.getElementById("fo-custom-code");
+      if (!input) return;
+      input.addEventListener("input", () => {
+        const value = input.value.trim();
+        if (value) codes[name] = input.value;
+        else delete codes[name];
+        rememberDraft();
+      });
+    }
+
+    function updateShareStatus(message) {
+      const status = document.getElementById("share-status");
+      const button = document.getElementById("save-shared");
+      const canWrite = typeof window.showOpenFilePicker === "function";
+      button.textContent = canWrite ? "Save shared file" : "Download shared file";
+      if (message) {
+        status.textContent = message;
+        return;
+      }
+      status.textContent = dirty
+        ? "These F&O Custom Code versions are only in this browser until you save the shared HTML file."
+        : "F&O Custom Code is stored in this HTML file. Save the shared file after editing so everyone who opens it sees the same versions.";
+    }
+
+    function patchSource(html) {
+      const payload = canon(codes).replace(/</g, "\\u003c");
+      const pattern = /(<script\b[^>]*\bid="fo-custom-code-data"[^>]*>)[\s\S]*?(<\/script>)/;
+      if (!pattern.test(html)) throw new Error("This page has no F&O Custom Code block to update.");
+      return html.replace(pattern, (match, open, close) => open + payload + close);
+    }
+
+    function downloadSharedFile(html) {
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(new Blob([html], { type: "text/html" }));
+      link.download = "Dynamics_365_environment_landscape.html";
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    async function saveSharedFile() {
+      const button = document.getElementById("save-shared");
+      button.disabled = true;
+      try {
+        if (typeof window.showOpenFilePicker === "function") {
+          const picks = await window.showOpenFilePicker({
+            multiple: false,
+            types: [{ description: "HTML page", accept: { "text/html": [".html"] } }]
+          });
+          const handle = picks[0];
+          const html = patchSource(await (await handle.getFile()).text());
+          const writable = await handle.createWritable();
+          await writable.write(html);
+          await writable.close();
+          sourceHtml = html;
+          updateShareStatus("Saved into the HTML file you chose. Anyone who opens that file sees these F&O Custom Code versions.");
+        } else {
+          downloadSharedFile(patchSource(sourceHtml));
+          updateShareStatus("Downloaded an updated copy. Replace the shared HTML with that file so the versions travel with it.");
+        }
+        dirty = false;
+      } catch (error) {
+        if (error && error.name === "AbortError") updateShareStatus();
+        else updateShareStatus(error && error.message ? error.message : "The shared file could not be saved.");
+      } finally {
+        button.disabled = false;
+      }
+    }
+
     function openPopup(name) {
       const env = envs.find((e) => e.name === name && e.details);
       if (!env) return;
@@ -363,6 +500,7 @@
         field("F&O URL", d.foUrl, d.foUrl),
         field("Application version", d.applicationVersion),
         field("Platform version", d.platformVersion),
+        customCodeField(env.name),
         field("F&O environment ID", d.foEnvironmentId),
         field("Power Platform environment ID", d.powerPlatformEnvironmentId),
         field("Dataverse organization ID", d.dataverseOrganizationId),
@@ -373,7 +511,8 @@
         field("Created", d.created),
         d.aos ? field("AOS", d.aos) : ""
       ].join("");
-      document.getElementById("popup-source").textContent = "Source: Power Platform admin · 30 September 2026.";
+      document.getElementById("popup-source").textContent = "Source: Power Platform admin · 30 September 2026. F&O Custom Code is stored in this HTML file.";
+      bindCustomCode(env.name);
       showPopup();
     }
 
@@ -437,6 +576,15 @@
         render();
       });
     });
+    document.getElementById("save-shared").addEventListener("click", saveSharedFile);
+    window.addEventListener("beforeunload", (event) => {
+      if (!dirty) return;
+      event.preventDefault();
+      event.returnValue = "";
+    });
+    sourceHtml = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+    loadCodes();
+    updateShareStatus();
     render();
   </script>
 </body>
