@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finance and Operations license position</title>
+  <meta name="description" content="Production license position from the Finance and Operations detailed licensing report, refreshed 19 October 2026. Seat gaps and spare full licenses. No prices in the source file.">
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7f9;
+      --surface: #ffffff;
+      --text: #0e253d;
+      --muted: #4a5a6b;
+      --faint: #6b7886;
+      --line: #dde3e8;
+      --accent: #0e253d;
+      --accent-ink: #ffffff;
+      --brand-green: #54b948;
+      --brand-grey: #919094;
+      --warn-bg: #f1f8ef;
+      --warn-line: #b9dfb3;
+      --row: #f3f6f8;
+      --risk: #a33a2c;
+      --covered: #2a6f4e;
+      --wrong: #c4a35a;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.55 Karbon, "Segoe UI", Verdana, sans-serif; }
+    .brandbar { background: var(--surface); border-bottom: 1px solid var(--line); border-top: 4px solid var(--brand-green); }
+    .brandbar-inner { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 14px 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .brandbar svg { height: 34px; width: auto; display: block; }
+    .brandbar span { color: var(--faint); font-size: 0.8125rem; letter-spacing: 0.04em; }
+    .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 32px 0 64px; }
+    .eyebrow { margin: 0 0 6px; color: var(--brand-grey); font-size: 0.8125rem; letter-spacing: 0.06em; text-transform: uppercase; }
+    h1, h2 { font-family: Feijoa, Georgia, serif; font-weight: 600; }
+    h1 { margin: 0 0 10px; font-size: 2rem; line-height: 1.2; }
+    h2 { margin: 0 0 10px; font-size: 1.3rem; }
+    h3 { margin: 0 0 6px; font-size: 1rem; font-weight: 650; }
+    p { margin: 0 0 10px; }
+    .lede { max-width: 78ch; color: var(--muted); }
+    .meta { color: var(--faint); font-size: 0.875rem; margin-top: 8px; }
+    section { margin-top: 32px; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 24px 0 0; }
+    .stat { background: var(--surface); border: 1px solid var(--line); padding: 14px 16px; }
+    .stat strong { display: block; font-size: 1.4rem; font-weight: 650; }
+    .stat span { color: var(--muted); font-size: 0.875rem; }
+    .stat.risk strong { color: var(--risk); }
+    .stat.warn strong { color: #8a6a1f; }
+    .decision { background: var(--accent); color: var(--accent-ink); padding: 18px 20px; margin-top: 24px; border-left: 6px solid var(--brand-green); }
+    .decision h2 { color: var(--accent-ink); margin-bottom: 8px; }
+    .decision p { margin: 0; max-width: 85ch; }
+    .callout { background: var(--warn-bg); border: 1px solid var(--warn-line); padding: 14px 16px; }
+    .callout p:last-child { margin: 0; }
+    .two-col { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 16px; }
+    .panel { background: var(--surface); border: 1px solid var(--line); padding: 16px 18px; }
+    .panel p:last-child, .panel ul:last-child { margin-bottom: 0; }
+    ul { margin: 0 0 10px; padding-left: 1.2rem; }
+    li + li { margin-top: 4px; }
+    .table-scroll { overflow: auto; max-height: 640px; border: 1px solid var(--line); background: var(--surface); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9375rem; }
+    .wide { min-width: 760px; }
+    th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+    th { position: sticky; top: 0; background: var(--surface); font-size: 0.75rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--faint); }
+    tbody tr:nth-child(even) { background: var(--row); }
+    td.num, th.num { text-align: right; white-space: nowrap; }
+    caption { caption-side: bottom; text-align: left; color: var(--faint); font-size: 0.8125rem; padding: 8px 12px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+    button { font: inherit; cursor: pointer; border: 1px solid var(--line); background: var(--surface); color: var(--text); border-radius: 999px; padding: 6px 12px; }
+    button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+    button:focus-visible { outline: 2px solid var(--brand-green); outline-offset: 2px; }
+    .count { color: var(--faint); font-size: 0.875rem; margin: 0 0 8px; }
+    .meter { display: flex; height: 12px; width: 100%; min-width: 140px; background: var(--row); }
+    .meter i { display: block; height: 100%; }
+    .meter .covered { background: var(--covered); }
+    .meter .none { background: var(--risk); }
+    .meter .wrong { background: var(--wrong); }
+    .legend { display: flex; flex-wrap: wrap; gap: 14px 20px; margin: 8px 0 0; color: var(--muted); font-size: 0.875rem; }
+    .legend b { display: inline-block; width: 12px; height: 12px; margin-right: 6px; vertical-align: -1px; }
+    .legend .covered { background: var(--covered); }
+    .legend .none { background: var(--risk); }
+    .legend .wrong { background: var(--wrong); }
+    tr.warn td:first-child { box-shadow: inset 3px 0 0 var(--wrong); }
+    footer { margin-top: 36px; color: var(--faint); font-size: 0.875rem; max-width: 85ch; }
+    @media (max-width: 800px) {
+      .stats, .two-col { grid-template-columns: 1fr; }
+    }
+    @media print {
+      body { background: #fff; font-size: 11pt; }
+      .brandbar, .decision { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      .brandbar-inner, .wrap { width: 100%; }
+      .wrap { padding: 0; }
+      .stat, .panel, .table-scroll, .decision { break-inside: avoid; }
+      .table-scroll { max-height: none; overflow: visible; }
+      button { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="brandbar">
+    <div class="brandbar-inner">
+      <svg viewBox="0 0 110 37" role="img" aria-label="Long View Systems" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="lv-mark" cx="44.1421" cy="20.9715" r="42.3616" gradientUnits="userSpaceOnUse">
+            <stop offset="0.1867" stop-color="#F3EA00"/>
+            <stop offset="0.1912" stop-color="#F1E902"/>
+            <stop offset="0.3317" stop-color="#C6D92C"/>
+            <stop offset="0.4723" stop-color="#A1CD3A"/>
+            <stop offset="0.6106" stop-color="#83C441"/>
+            <stop offset="0.7461" stop-color="#6BBD45"/>
+            <stop offset="0.8775" stop-color="#5ABA47"/>
+            <stop offset="1" stop-color="#54B948"/>
+          </radialGradient>
+          <linearGradient id="lv-shade" gradientUnits="userSpaceOnUse" x1="16.2191" y1="23.8493" x2="17.0379" y2="27.5984">
+            <stop offset="0.1867" stop-color="#54B948" stop-opacity="0"/>
+            <stop offset="0.3063" stop-color="#54B948" stop-opacity="0.1471"/>
+            <stop offset="1" stop-color="#54B948"/>
+          </linearGradient>
+        </defs>
+        <path fill="#54B948" d="M15.03,24.84h19.79c0.74-1.97,1.15-4.11,1.15-6.34c0-9.91-8.03-17.94-17.94-17.94C8.13,0.56,0.09,8.59,0.09,18.5c0,9.91,8.03,17.94,17.94,17.94c6.06,0,11.41-3,14.66-7.6H9.66c-0.76,0-1.46-0.44-1.8-1.12c-0.34-0.68-0.26-1.5,0.21-2.11L22.24,7.17c0.67-0.88,1.93-1.04,2.81-0.37c0.88,0.67,1.04,1.93,0.37,2.81L14.54,23.77v0C14.09,24.48,14.59,24.84,15.03,24.84z"/>
+        <path fill="#919094" d="M45.72,23.17H43v-8.92c0-0.26-0.08-0.49-0.23-0.65c-0.15-0.17-0.38-0.25-0.63-0.25c-0.25,0-0.47,0.09-0.63,0.25c-0.16,0.17-0.23,0.4-0.23,0.65v9.62c0,0.24,0.06,0.47,0.22,0.65c0.15,0.18,0.39,0.28,0.68,0.28c0,0,0,0,0.01,0h3.54c0.22,0,0.44-0.06,0.6-0.2c0.16-0.14,0.25-0.36,0.25-0.61c0-0.25-0.09-0.47-0.25-0.61C46.16,23.23,45.95,23.17,45.72,23.17z M53.93,17.49c-0.64-0.81-1.6-1.35-2.82-1.35c-0.6,0-1.15,0.13-1.62,0.37c-0.47,0.24-0.88,0.58-1.19,0.98c-0.32,0.41-0.57,0.89-0.73,1.4c-0.16,0.52-0.25,1.07-0.25,1.63c0,0.56,0.08,1.11,0.25,1.63c0.16,0.52,0.41,0.99,0.73,1.4c0.32,0.41,0.72,0.74,1.19,0.98c0.47,0.24,1.02,0.37,1.62,0.37c0,0,0,0,0.01,0c0.6,0,1.15-0.13,1.62-0.37c0.47-0.24,0.87-0.58,1.19-0.98c0.32-0.41,0.57-0.88,0.73-1.4c0.16-0.51,0.25-1.07,0.25-1.63c0-0.56-0.08-1.11-0.25-1.63C54.5,18.37,54.25,17.89,53.93,17.49z M52.71,22.45c-0.34,0.54-0.83,0.9-1.6,0.91c-0.38,0-0.7-0.09-0.96-0.25c-0.26-0.16-0.47-0.38-0.64-0.66c-0.33-0.54-0.47-1.27-0.47-1.94c0-0.67,0.14-1.4,0.47-1.94c0.17-0.27,0.37-0.5,0.64-0.66c0.26-0.16,0.58-0.25,0.96-0.25c0.39,0,0.7,0.09,0.97,0.25c0.26,0.16,0.47,0.38,0.64,0.66c0.33,0.54,0.47,1.27,0.47,1.94C53.19,21.18,53.05,21.92,52.71,22.45z M62.23,16.87c-0.6-0.52-1.35-0.74-2.02-0.74c-0.74,0-1.51,0.24-2.12,0.83c-0.01-0.23-0.09-0.43-0.23-0.58c-0.15-0.17-0.38-0.25-0.63-0.25c-0.25,0-0.47,0.09-0.63,0.25c-0.16,0.17-0.23,0.4-0.23,0.66v6.95c0,0.26,0.08,0.49,0.23,0.65c0.15,0.17,0.38,0.25,0.63,0.25c0.25,0,0.47-0.09,0.63-0.25c0.15-0.16,0.23-0.4,0.23-0.65v-4.48c0.01-1.34,0.9-1.83,1.72-1.84c0.82,0.01,1.71,0.5,1.72,1.84v4.48c0,0.26,0.08,0.49,0.23,0.65c0.16,0.17,0.38,0.25,0.63,0.25c0,0,0,0,0.01,0c0.24,0,0.47-0.09,0.62-0.25c0.15-0.16,0.23-0.4,0.23-0.65v-4.56C63.25,18.23,62.83,17.39,62.23,16.87z M71.34,16.13c-0.21,0-0.44,0.05-0.61,0.19c-0.17,0.13-0.29,0.34-0.29,0.59c-0.23-0.21-0.52-0.41-0.86-0.55c-0.33-0.14-0.7-0.24-1.08-0.24c-0.61,0-1.15,0.13-1.62,0.37c-0.47,0.24-0.87,0.58-1.19,0.98c-0.32,0.41-0.57,0.89-0.73,1.4c-0.17,0.52-0.25,1.07-0.25,1.63c0,0.56,0.09,1.11,0.25,1.63c0.16,0.52,0.41,0.99,0.73,1.4c0.32,0.41,0.72,0.74,1.19,0.98c0.47,0.24,1.02,0.37,1.62,0.37c0.79,0,1.47-0.32,1.94-0.84v0.2c0,0.56-0.13,1.16-0.44,1.6c-0.16,0.22-0.36,0.41-0.62,0.54c-0.26,0.13-0.59,0.21-1,0.21c-0.35,0-0.64-0.06-0.9-0.14c-0.26-0.08-0.48-0.19-0.68-0.31c-0.2-0.12-0.38-0.24-0.56-0.33c-0.18-0.1-0.36-0.17-0.56-0.17c0,0-0.01,0-0.02,0c-0.26,0-0.47,0.12-0.58,0.29c-0.11,0.16-0.16,0.36-0.16,0.53c0.02,0.25,0.15,0.47,0.35,0.66c0.21,0.19,0.49,0.36,0.8,0.51c0.63,0.3,1.44,0.5,2.18,0.5h0.01c0.57,0,1.1-0.1,1.58-0.28c0.47-0.18,0.89-0.46,1.23-0.82c0.68-0.71,1.07-1.75,1.07-3v-7.06c0,0,0-0.01,0-0.01c0-0.28-0.12-0.5-0.28-0.64C71.71,16.19,71.52,16.14,71.34,16.13z M70.1,22.45c-0.33,0.54-0.82,0.9-1.6,0.91c-0.39,0-0.7-0.09-0.96-0.25c-0.26-0.16-0.47-0.38-0.64-0.66c-0.33-0.54-0.47-1.27-0.47-1.94c0-0.67,0.14-1.4,0.47-1.94c0.17-0.27,0.37-0.5,0.64-0.66c0.26-0.16,0.58-0.25,0.96-0.25c0.39,0,0.7,0.09,0.97,0.25c0.26,0.16,0.47,0.38,0.63,0.66c0.33,0.54,0.47,1.27,0.47,1.94C70.57,21.18,70.43,21.92,70.1,22.45z M85.48,13.35c-0.31,0-0.56,0.13-0.7,0.33c-0.15,0.2-0.22,0.43-0.3,0.67v0l-2.63,7.57l-2.63-7.57c-0.09-0.24-0.16-0.47-0.3-0.67c-0.14-0.2-0.39-0.34-0.7-0.33c-0.47,0-0.78,0.36-0.78,0.74c0,0.2,0.04,0.38,0.1,0.58l3.35,9.36c0.14,0.45,0.39,0.87,0.96,0.86c0.01,0,0.01,0,0.02,0c0.55,0,0.8-0.42,0.94-0.86l3.35-9.36c0.07-0.2,0.1-0.38,0.1-0.58C86.27,13.71,85.95,13.35,85.48,13.35z M88.11,16.13c-0.25,0-0.47,0.09-0.62,0.26c-0.16,0.17-0.24,0.39-0.23,0.65v6.95c0,0.01,0,0.02,0,0.03c0,0.25,0.08,0.47,0.23,0.63c0.15,0.17,0.38,0.26,0.62,0.26c0,0,0.01,0,0.01,0c0.24,0,0.46-0.09,0.62-0.26c0.16-0.16,0.23-0.39,0.23-0.65v-6.95c0-0.26-0.07-0.48-0.23-0.65C88.58,16.22,88.36,16.13,88.11,16.13z M88.11,13.35c-0.28,0-0.53,0.11-0.72,0.3c-0.18,0.18-0.3,0.44-0.3,0.72c0,0.28,0.11,0.53,0.3,0.71c0.18,0.18,0.44,0.3,0.72,0.3s0.54-0.11,0.72-0.3c0.18-0.18,0.3-0.43,0.3-0.71C89.12,13.81,88.67,13.35,88.11,13.35z M97.67,20.98c0.16-0.17,0.21-0.41,0.21-0.66c0-1.02-0.34-2.07-0.97-2.86c-0.63-0.79-1.56-1.32-2.74-1.33c-0.6,0-1.15,0.13-1.62,0.36c-0.48,0.23-0.89,0.56-1.22,0.97c-0.33,0.41-0.59,0.88-0.76,1.4c-0.17,0.52-0.26,1.08-0.26,1.65c0,1.12,0.29,2.2,0.94,3.03c0.32,0.41,0.74,0.75,1.24,0.98c0.5,0.23,1.09,0.37,1.77,0.37c0,0,0,0,0.01,0c0.42,0,0.84-0.07,1.24-0.17c0.4-0.11,0.77-0.26,1.09-0.44c0.32-0.18,0.6-0.37,0.8-0.58c0.2-0.21,0.33-0.43,0.34-0.67c0-0.23-0.08-0.43-0.2-0.56c-0.12-0.14-0.29-0.22-0.47-0.22c-0.19,0.01-0.35,0.1-0.5,0.21c-0.15,0.11-0.31,0.25-0.5,0.38c-0.19,0.13-0.42,0.26-0.71,0.36c-0.29,0.1-0.63,0.16-1.07,0.16c-1.37-0.01-2.16-0.9-2.23-2.14h4.93C97.26,21.22,97.5,21.15,97.67,20.98z M92.02,19.84c0.05-0.56,0.21-1.1,0.53-1.51c0.32-0.4,0.8-0.66,1.5-0.66c0.03,0,0.06,0,0.11,0c0.35,0,0.64,0.08,0.89,0.21c0.25,0.13,0.45,0.32,0.62,0.55c0.29,0.4,0.45,0.92,0.48,1.42H92.02z M109.9,16.4c-0.13-0.15-0.36-0.27-0.63-0.27c-0.34-0.02-0.75,0.19-0.92,0.82l-1.59,5.11l-1.56-4.91c-0.09-0.3-0.17-0.54-0.31-0.73c-0.14-0.19-0.37-0.3-0.64-0.3c-0.01,0-0.01,0-0.02,0c0,0-0.01,0-0.02,0c-0.27,0-0.5,0.11-0.64,0.3c-0.14,0.19-0.22,0.43-0.31,0.73l-1.56,4.91l-1.59-5.11c-0.17-0.61-0.56-0.82-0.9-0.82c-0.01,0-0.02,0-0.04,0c-0.27,0-0.49,0.11-0.63,0.27c-0.14,0.16-0.2,0.35-0.2,0.52c0,0.18,0.06,0.37,0.12,0.58v0l2.25,6.56c0.09,0.27,0.21,0.48,0.36,0.62c0.16,0.14,0.34,0.21,0.57,0.21c0.01,0,0.02,0,0.04,0c0.44,0.01,0.78-0.28,0.94-0.84l1.6-5.05l1.61,5.05c0.15,0.54,0.48,0.84,0.91,0.84c0.01,0,0.02,0,0.03,0c0.46,0.01,0.78-0.29,0.96-0.83l2.25-6.56c0.07-0.21,0.12-0.4,0.12-0.58C110.09,16.74,110.04,16.55,109.9,16.4z"/>
+        <path fill="url(#lv-mark)" d="M15.03,24.84h19.79c0.74-1.97,1.15-4.11,1.15-6.34c0-9.91-8.03-17.94-17.94-17.94C8.13,0.56,0.09,8.59,0.09,18.5c0,9.91,8.03,17.94,17.94,17.94c6.06,0,11.41-3,14.66-7.6H9.66c-0.76,0-1.46-0.44-1.8-1.12c-0.34-0.68-0.26-1.5,0.21-2.11L22.24,7.17c0.67-0.88,1.93-1.04,2.81-0.37c0.88,0.67,1.04,1.93,0.37,2.81L14.54,23.77v0C14.09,24.48,14.59,24.84,15.03,24.84z"/>
+        <path fill="url(#lv-shade)" d="M9.66,28.84c-0.76,0-1.46-0.44-1.8-1.12c-0.34-0.68-0.26-1.5,0.21-2.11L0.09,18.5c0,9.91,8.03,17.94,17.94,17.94c6.06,0,11.41-3,14.66-7.6H9.66z"/>
+      </svg>
+      <span>Dynamics 365 platform administration</span>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <header>
+      <p class="eyebrow">License position · 19 October 2026</p>
+      <h1>Finance and Operations license position</h1>
+      <p class="lede">Production users in the detailed licensing report, counted once per person. A row in the source file is a security role, not a person. Sandbox roles are marked Not Applicable and do not add a requirement. The file has no prices, so this is a seat position, not a bill.</p>
+      <p class="meta">Source: Finance_And_Operations_Licensing_Detailed_Report.csv · refreshed 19 October 2026 · 2,266 role rows, 505 production users</p>
+    </header>
+
+    <section class="stats" aria-label="Production license position">
+      <div class="stat"><strong>505</strong><span>Production users</span></div>
+      <div class="stat risk"><strong>149</strong><span>No license assigned</span></div>
+      <div class="stat warn"><strong>47</strong><span>License does not cover the role</span></div>
+      <div class="stat"><strong>130</strong><span>Spare full license, role already covered</span></div>
+    </section>
+
+    <aside class="decision">
+      <h2>74 people need a full user license they do not hold</h2>
+      <p>Human Resources is the wide gap: 46 of 48 people with a full HR role have no Human Resources license. Finance is short 31 of 58, Project Operations 17 of 39, Supply Chain all 4, and one custom read-only role needs Operations Activity.</p>
+    </aside>
+
+    <section class="two-col">
+      <div class="panel">
+        <h2>Same counts as the license summary</h2>
+        <p>149 with no license and 47 under-licensed match the tenant license summary from the same morning. 179 people are aligned. The summary’s 241 over-licensed users is the wider bucket: it also treats a Team Member license as more than Human Resources Self Service. 112 people whose only production requirement is self-service hold Team Member. Adding those 112 to the 130 spare full licenses lands on 242.</p>
+      </div>
+      <div class="panel">
+        <h2>How a license covers a role</h2>
+        <ul>
+          <li>Finance Premium covers Finance.</li>
+          <li>Every full user license covers Team Members, Operations Activity, and Human Resources Self Service.</li>
+          <li>Team Members covers Human Resources Self Service.</li>
+          <li>A full license does not cover a different product’s full role.</li>
+        </ul>
+        <p>Rules are from the March 2026 Dynamics 365 Licensing Guide, Appendix F.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Required license against what each person holds</h2>
+      <div class="table-scroll" style="max-height: none;">
+        <table>
+          <caption>Each bar is that requirement’s production users, split by whether the assigned license covers it. A person with two requirements is counted in both rows. 19 October 2026.</caption>
+          <thead>
+            <tr>
+              <th>Required license</th>
+              <th class="num">People</th>
+              <th class="num">Covered</th>
+              <th class="num">No license</th>
+              <th class="num">Wrong license</th>
+              <th>Mix</th>
+            </tr>
+          </thead>
+          <tbody id="coverage"></tbody>
+        </table>
+      </div>
+      <div class="legend" aria-hidden="true">
+        <span><b class="covered"></b>Covered</span>
+        <span><b class="none"></b>No license</span>
+        <span><b class="wrong"></b>Wrong license</span>
+      </div>
+    </section>
+
+    <section>
+      <h2>Roles that create the requirement</h2>
+      <p>The required license is the highest privilege inside the security role, including LVS custom roles. Standard self-service roles are not what is driving Human Resources.</p>
+      <div class="table-scroll" style="max-height: none;">
+        <table>
+          <caption>Production role assignments in the detailed report. One assignment is one user holding that role.</caption>
+          <thead>
+            <tr><th>Security role</th><th class="num">Production assignments</th><th>License the report requires</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>LVS View project invoices</td><td class="num">157</td><td>Team Members</td></tr>
+            <tr><td>LVS Team Lead</td><td class="num">135</td><td>Human Resources Self Service</td></tr>
+            <tr><td>LV Manager</td><td class="num">96</td><td>Human Resources Self Service</td></tr>
+            <tr><td>Accountant</td><td class="num">44</td><td>Finance</td></tr>
+            <tr><td>Project accountant</td><td class="num">25</td><td>Project Operations</td></tr>
+            <tr><td>LVS Human Resource Assistant View</td><td class="num">18</td><td>Human Resources</td></tr>
+            <tr><td>Compensation and benefits manager</td><td class="num">16</td><td>Human Resources</td></tr>
+            <tr><td>Expense administrator</td><td class="num">12</td><td>Project Operations</td></tr>
+            <tr><td>Employee</td><td class="num">10</td><td>Team Members</td></tr>
+            <tr><td>Accounts receivable clerk</td><td class="num">6</td><td>Finance</td></tr>
+            <tr><td>Payroll administrator</td><td class="num">5</td><td>Human Resources</td></tr>
+            <tr><td>LV Boarding Administrator</td><td class="num">5</td><td>Team Members</td></tr>
+            <tr><td>LVS SUPPORT</td><td class="num">3</td><td>Human Resources, and Finance on some users</td></tr>
+            <tr><td>LVS Skills and Certificate Manager</td><td class="num">3</td><td>Human Resources</td></tr>
+            <tr><td>Customer service manager</td><td class="num">2</td><td>Supply Chain Management</td></tr>
+            <tr><td>Purchasing agent</td><td class="num">2</td><td>Supply Chain Management</td></tr>
+            <tr><td>LVS AP Read Only</td><td class="num">1</td><td>Operations Activity</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout" style="margin-top: 16px;">
+        <h3>Custom roles are the HR and Activity story</h3>
+        <p>LVS Team Lead and LV Manager stop at Human Resources Self Service, which a Team Member license already includes. LVS Human Resource Assistant View, LVS Skills and Certificate Manager, and LVS SUPPORT are classified as full Human Resources, so Team Member does not cover them. LVS AP Read Only is classified as Operations Activity, which Team Member also does not cover.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Named people missing a full license</h2>
+      <p>54 of the 74 have an email. The other 20 are production accounts with a security role and no email: 7 need Finance and Project Operations, 5 need Finance only, 7 need Human Resources, and 1 needs Human Resources and Finance.</p>
+      <div class="filters" id="filters" role="toolbar" aria-label="Filter by missing license"></div>
+      <p class="count" id="count"></p>
+      <div class="table-scroll">
+        <table class="wide">
+          <caption>Email domain is lvs1.com. Admin accounts are listed by their sign-in name.</caption>
+          <thead>
+            <tr><th>Person</th><th>Assigned now</th><th>Still required</th><th>Role that requires it</th></tr>
+          </thead>
+          <tbody id="gap-rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Named people with no license, self-service or team member only</h2>
+      <p>These 14 need a Team Member license, or a Human Resources Self Service license for the manager and team-lead roles. Across production, 72 people with only a self-service requirement and 50 with only a Team Members requirement have no license at all. The other 108 of that 122 are accounts with a security role and no email.</p>
+      <div class="table-scroll" style="max-height: none;">
+        <table>
+          <caption>Named production users whose only gap is Team Members or Human Resources Self Service.</caption>
+          <thead>
+            <tr><th>Person</th><th>Required</th><th>Role</th></tr>
+          </thead>
+          <tbody id="light-rows"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>Full licenses production roles do not use</h2>
+      <p>130 production users are already covered and still hold a full license their roles do not require: 120 hold Project Operations, 13 hold Finance Premium, and 3 of those hold both. Six more people also hold Project Operations without a Project Operations role, but they are under-licensed for something else, so that seat is not free to remove until the other gap is fixed.</p>
+      <div class="table-scroll" style="max-height: none;">
+        <table>
+          <caption>What the 126 production users with an unused Project Operations license actually need. 19 October 2026.</caption>
+          <thead>
+            <tr><th>Requirement</th><th class="num">People</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Team Members only</td><td class="num">78</td></tr>
+            <tr><td>Human Resources Self Service only</td><td class="num">40</td></tr>
+            <tr><td>Human Resources</td><td class="num">4</td></tr>
+            <tr><td>Finance</td><td class="num">2</td></tr>
+            <tr><td>Finance and Human Resources</td><td class="num">2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="margin-top: 12px;">Project Operations already includes Team Members and Human Resources Self Service, so the first two rows are compliant with a heavier license than the role needs.</p>
+
+      <h3 style="margin-top: 22px;">Finance Premium with no Finance role</h3>
+      <div class="table-scroll" style="max-height: none;">
+        <table>
+          <caption>MaMay Galvez still needs Project Operations. The other 13 are covered by a lighter requirement.</caption>
+          <thead>
+            <tr><th>Person</th><th>Also assigned</th><th>What production actually requires</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Brian.Olson@lvs1.com</td><td>Finance Premium</td><td>Human Resources Self Service</td></tr>
+            <tr><td>wendy.bull@lvs1.com</td><td>Finance Premium</td><td>Human Resources Self Service</td></tr>
+            <tr><td>Dennis.White@lvs1.com</td><td>Finance Premium</td><td>Human Resources Self Service</td></tr>
+            <tr><td>Atenea.Schaefer@lvs1.com</td><td>Finance Premium</td><td>Human Resources Self Service</td></tr>
+            <tr><td>Dave.Dennis@lvs1.com</td><td>Finance Premium</td><td>Human Resources Self Service</td></tr>
+            <tr><td>Mark.Paetsch@lvs1.com</td><td>Finance Premium</td><td>Human Resources Self Service</td></tr>
+            <tr><td>Clay.Carey@lvs1.com</td><td>Finance Premium</td><td>Human Resources Self Service</td></tr>
+            <tr><td>Janak.Parekh@lvs1.com</td><td>Finance Premium</td><td>Human Resources Self Service</td></tr>
+            <tr><td>Ryan.Ball@lvs1.com</td><td>Finance Premium</td><td>Team Members</td></tr>
+            <tr><td>Robert.Talman@lvs1.com</td><td>Finance Premium</td><td>Team Members</td></tr>
+            <tr><td>Helen.McClurg@lvs1.com</td><td>Finance Premium and Project Operations</td><td>Team Members</td></tr>
+            <tr><td>Jeff.Mathews@lvs1.com</td><td>Finance Premium and Project Operations</td><td>Human Resources Self Service</td></tr>
+            <tr><td>Kristin.Wilkes@lvs1.com</td><td>Finance Premium and Project Operations</td><td>Human Resources Self Service</td></tr>
+            <tr class="warn"><td>MaMay.Galvez@lvs1.com</td><td>Finance Premium and Team Member</td><td>Project Operations</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>What the file contains</h2>
+      <div class="two-col">
+        <div class="panel">
+          <h3>Environments in the extract</h3>
+          <p>Six environments, 513 user ids. LVS-FO-PROD has all 505 users the license requirement is judged on. Acceptance, testing, CE test, support, and UDE-AK add sandbox rows only. Eight people exist only outside production, so they do not create a license requirement here.</p>
+        </div>
+        <div class="panel">
+          <h3>Licenses assigned on these users</h3>
+          <ul>
+            <li>Team Member, 204 people</li>
+            <li>Project Operations, 152</li>
+            <li>Finance Premium, 42</li>
+            <li>Human Resources, 4</li>
+          </ul>
+          <p>Nobody in the extract holds a Finance base license, a Supply Chain license, or an Operations Activity license. Four Human Resources licenses are assigned, and only two of them sit on someone whose production roles require Human Resources.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Prepared from Finance_And_Operations_Licensing_Detailed_Report.csv, refreshed 19 October 2026 (production and support at 12:01 UTC, testing and CE test at 14:01 UTC, acceptance at 16:03 UTC). People were classified with the March 2026 Dynamics 365 Licensing Guide. The tenant license summary from the same morning reported 149 users without a license and 47 under-licensed. No dollar amounts are in the source file.
+    </footer>
+  </main>
+
+  <script>
+    const coverage = [
+      ["Human Resources Self Service", 232, 160, 72, 0],
+      ["Team Members", 177, 127, 50, 0],
+      ["Finance", 58, 27, 20, 11],
+      ["Human Resources", 48, 2, 10, 36],
+      ["Project Operations", 39, 22, 10, 7],
+      ["Supply Chain Management", 4, 0, 0, 4],
+      ["Operations Activity", 1, 0, 0, 1]
+    ];
+
+    const gaps = [
+      ["Cheryl.Ast@lvs1.com", "None", "Finance", "Auditor", "Finance"],
+      ["Natalie.Allison@lvs1.com", "None", "Finance", "Accounts receivable clerk", "Finance"],
+      ["Natacha.Lemon@lvs1.com", "Project Operations and Team Member", "Finance", "Accounts receivable clerk", "Finance"],
+      ["Sarah.Wilkie@lvs1.com", "Team Member", "Finance", "Accountant", "Finance"],
+      ["Susanna.Kwong@lvs1.com", "Project Operations", "Finance", "Accountant", "Finance"],
+      ["Vanessa.Wang@lvs1.com", "None", "Finance", "Accounts receivable clerk", "Finance"],
+      ["Lynn.Soralbo@lvs1.com", "None", "Finance and Human Resources", "Accountant; Payroll administrator", "Finance"],
+      ["Nanette.Nerland@lvs1.com", "Team Member", "Finance and Human Resources", "Accountant; Compensation and benefits manager", "Finance"],
+      ["Reena.Woodwall@lvs1.com", "Project Operations", "Finance and Human Resources", "Accountant; Compensation and benefits manager", "Finance"],
+      ["Bernard.Swanevelder@lvs1.com", "None", "Finance and Project Operations", "Accountant; Project accountant", "Finance"],
+      ["Dianne.Wells@lvs1.com", "Team Member", "Finance and Project Operations", "Accountant; Project accountant", "Finance"],
+      ["Azim.Hooda@lvs1.com", "Team Member", "Human Resources and Finance", "Payroll administrator; Accountant", "Human Resources"],
+      ["Vaidehi.Parab-Malaye@lvs1.com", "Project Operations", "Human Resources and Finance", "Payroll administrator; Accountant", "Human Resources"],
+      ["Stella.Ambaliya@lvs1.com", "None", "Human Resources, Finance, and Project Operations", "LVS SUPPORT; Project accountant", "Human Resources"],
+      ["Ailish.Dalmeida@lvs1.com", "Team Member", "Human Resources", "Compensation and benefits manager", "Human Resources"],
+      ["Alyssa.Watt@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["Argentina.Candal@lvs1.com", "Project Operations", "Human Resources", "LVS Skills and Certificate Manager", "Human Resources"],
+      ["Brooke.Single@lvs1.com", "Team Member", "Human Resources", "Compensation and benefits manager", "Human Resources"],
+      ["Chelsey.Hall@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["Connie.Lim@lvs1.com", "Finance Premium", "Human Resources", "Payroll administrator", "Human Resources"],
+      ["Daniel.Edheredino@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["Emily.Jorgenson@lvs1.com", "Team Member", "Human Resources", "Compensation and benefits manager", "Human Resources"],
+      ["Emily.Riehl@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["Jane.Crompton@lvs1.com", "Team Member", "Human Resources", "Compensation and benefits manager", "Human Resources"],
+      ["Jennifer.DiNello@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["Jessica.Lau@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["Jill.Rouse@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["Jillian.Horn@lvs1.com", "Team Member", "Human Resources", "LVS Skills and Certificate Manager", "Human Resources"],
+      ["Justin.Park@lvs1.com", "Team Member", "Human Resources", "Compensation and benefits manager", "Human Resources"],
+      ["Katie.Little@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["Kimberley.Kolanos@lvs1.com", "Team Member", "Human Resources", "Compensation and benefits manager", "Human Resources"],
+      ["Kyla.Flack@lvs1.com", "Team Member", "Human Resources", "Compensation and benefits manager", "Human Resources"],
+      ["Lindsay.Brown@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["Lori.Checkley@lvs1.com", "Team Member", "Human Resources", "Compensation and benefits manager", "Human Resources"],
+      ["Melissa.Bell@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["Nathania.Parnetta@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant", "Human Resources"],
+      ["Nathaniel.Cherinet@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["Priya.Srivastava@lvs1.com", "Project Operations", "Human Resources", "Compensation and benefits manager", "Human Resources"],
+      ["Stamatina.Sergiannis@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["Tasha.Engel@lvs1.com", "Project Operations", "Human Resources", "Compensation and benefits manager", "Human Resources"],
+      ["Trevor.Clark@lvs1.com", "Team Member", "Human Resources", "LVS Human Resource Assistant View", "Human Resources"],
+      ["admin_mbazin@lvs1.com", "Finance Premium and Project Operations", "Human Resources", "Human resource manager", "Human Resources"],
+      ["admin_sambaliya@lvs1.com", "Finance Premium", "Human Resources", "LVS SUPPORT", "Human Resources"],
+      ["admin_smehta@lvs1.com", "Finance Premium and Project Operations", "Human Resources and Supply Chain", "LVS SUPPORT; Customer service manager", "Supply Chain"],
+      ["Nathan.Anema@lvs1.com", "Team Member", "Operations Activity", "LVS AP Read Only", "Activity"],
+      ["Kevin.Thompson@lvs1.com", "Team Member", "Project Operations", "Project manager", "Project Operations"],
+      ["MaMay.Galvez@lvs1.com", "Finance Premium and Team Member", "Project Operations", "Expense administrator", "Project Operations"],
+      ["Morgan.Bazin@lvs1.com", "Finance Premium and Team Member", "Project Operations", "Expense administrator", "Project Operations"],
+      ["Ailton.Junior@lvs1.com", "Team Member", "Project Operations and Finance", "Project accountant; Accountant", "Project Operations"],
+      ["Kai.Ge@lvs1.com", "Team Member", "Project Operations and Finance", "Project accountant; Accountant", "Project Operations"],
+      ["Olu.Fabunmi@lvs1.com", "None", "Project Operations and Finance", "Project accountant; Accountant", "Project Operations"],
+      ["Lei.Chang@lvs1.com", "Finance Premium and Project Operations", "Supply Chain and Human Resources", "Purchasing agent; LVS Human Resource Assistant View", "Supply Chain"],
+      ["admin_mgalvez@lvs1.com", "Finance Premium and Project Operations", "Supply Chain and Human Resources", "Purchasing agent; Compensation and benefits manager", "Supply Chain"],
+      ["Shilpa.Mehta@lvs1.com", "Team Member", "Supply Chain, Project Operations, and Finance", "Customer service manager; Expense administrator; Accounts receivable manager", "Supply Chain"]
+    ];
+
+    const light = [
+      ["steve.gill@lvs1.com", "Human Resources Self Service", "LV Manager"],
+      ["Jeremy.Pedder@lvs1.com", "Human Resources Self Service", "LV Manager"],
+      ["Patrick.McGuinty@lvs1.com", "Human Resources Self Service", "LV Manager"],
+      ["Doran.Wilson@lvs1.com", "Human Resources Self Service", "LV Manager"],
+      ["Sean.Boyko@lvs1.com", "Human Resources Self Service", "LV Manager"],
+      ["Mario.Santos@lvs1.com", "Human Resources Self Service", "LV Manager"],
+      ["Michael.Hughes@lvs1.com", "Human Resources Self Service", "LVS Team Lead"],
+      ["Jeena.Godfrin@lvs1.com", "Human Resources Self Service", "LVS Team Lead"],
+      ["Sukhdev.Chatha@lvs1.com", "Human Resources Self Service", "LVS Team Lead"],
+      ["Magdalena.Altman@lvs1.com", "Team Members", "LVS View project invoices"],
+      ["Fayma.Nafi@lvs1.com", "Team Members", "LVS View project invoices"],
+      ["Jaime.Cespedes@lvs1.com", "Team Members", "LVS View project invoices"],
+      ["Charles.Blakney@lvs1.com", "Team Members", "LVS View project invoices"],
+      ["Ify.Elendu@lvs1.com", "Team Members", "LVS View project invoices"]
+    ];
+
+    const filters = ["All", "Finance", "Human Resources", "Project Operations", "Supply Chain", "Activity"];
+    let active = "All";
+
+    function meter(covered, none, wrong, total) {
+      const bar = document.createElement("div");
+      bar.className = "meter";
+      bar.setAttribute("role", "img");
+      bar.setAttribute("aria-label", covered + " covered, " + none + " with no license, " + wrong + " on the wrong license");
+      [["covered", covered], ["none", none], ["wrong", wrong]].forEach(function (part) {
+        if (!part[1]) return;
+        const slice = document.createElement("i");
+        slice.className = part[0];
+        slice.style.width = (part[1] / total * 100) + "%";
+        bar.appendChild(slice);
+      });
+      return bar;
+    }
+
+    function renderCoverage() {
+      const body = document.getElementById("coverage");
+      coverage.forEach(function (row) {
+        const tr = document.createElement("tr");
+        [0, 1, 2, 3, 4].forEach(function (index) {
+          const cell = document.createElement(index === 0 ? "td" : "td");
+          if (index === 0) cell.textContent = row[0];
+          else if (index < 5) {
+            cell.className = "num";
+            cell.textContent = String(row[index]);
+          }
+          tr.appendChild(cell);
+        });
+        const mix = document.createElement("td");
+        mix.appendChild(meter(row[2], row[3], row[4], row[1]));
+        tr.appendChild(mix);
+        body.appendChild(tr);
+      });
+    }
+
+    function matches(row) {
+      if (active === "All") return true;
+      return row[4] === active || row[2].indexOf(active) !== -1;
+    }
+
+    function renderGaps() {
+      const body = document.getElementById("gap-rows");
+      const shown = gaps.filter(matches);
+      body.replaceChildren();
+      shown.forEach(function (row) {
+        const tr = document.createElement("tr");
+        row.slice(0, 4).forEach(function (value) {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          tr.appendChild(cell);
+        });
+        body.appendChild(tr);
+      });
+      document.getElementById("count").textContent = "Showing " + shown.length + " of " + gaps.length + " named users.";
+    }
+
+    function renderFilters() {
+      const bar = document.getElementById("filters");
+      filters.forEach(function (name) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = name === "All" ? "All " + gaps.length : name;
+        button.setAttribute("aria-pressed", name === active ? "true" : "false");
+        button.addEventListener("click", function () {
+          active = name;
+          Array.prototype.forEach.call(bar.children, function (child) {
+            child.setAttribute("aria-pressed", child === button ? "true" : "false");
+          });
+          renderGaps();
+        });
+        bar.appendChild(button);
+      });
+    }
+
+    function renderLight() {
+      const body = document.getElementById("light-rows");
+      light.forEach(function (row) {
+        const tr = document.createElement("tr");
+        row.forEach(function (value) {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          tr.appendChild(cell);
+        });
+        body.appendChild(tr);
+      });
+    }
+
+    renderCoverage();
+    renderFilters();
+    renderGaps();
+    renderLight();
+  </script>
+</body>
+</html>
