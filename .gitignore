@@ -29,3 +29,8 @@ __pycache__/
 
 # Logs
 *.log
+
+# Expo
+.expo/
+expo-env.d.ts
+*.tsbuildinfo
